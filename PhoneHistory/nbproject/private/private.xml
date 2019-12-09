@@ -3,14 +3,13 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/MisterZii/source/repos/SD/PhoneHistory/src/Blockchain/Phone.java</file>
-            <file>file:/C:/Users/MisterZii/source/repos/SD/PhoneHistory/src/miners/DistributedMiner.java</file>
-            <file>file:/C:/Users/MisterZii/source/repos/SD/PhoneHistory/src/Blockchain/Block.java</file>
-            <file>file:/C:/Users/MisterZii/source/repos/SD/PhoneHistory/src/Blockchain/BlockChain.java</file>
-            <file>file:/C:/Users/MisterZii/source/repos/SD/PhoneHistory/src/miners/NonceFoundListener.java</file>
-            <file>file:/C:/Users/MisterZii/source/repos/SD/PhoneHistory/src/SD/RemoteNode.java</file>
-            <file>file:/C:/Users/MisterZii/source/repos/SD/PhoneHistory/src/SD/ServiceGUI.java</file>
-            <file>file:/C:/Users/MisterZii/source/repos/SD/PhoneHistory/src/SD/IRemoteNode.java</file>
+            <file>file:/C:/Users/MisterZii/source/repos/SD/PhoneHistory/PhoneHistory/src/SD/ServiceGUI.java</file>
+            <file>file:/C:/Users/MisterZii/source/repos/SD/PhoneHistory/PhoneHistory/src/SD/RemoteNode.java</file>
+            <file>file:/C:/Users/MisterZii/source/repos/SD/PhoneHistory/PhoneHistory/src/Blockchain/BlockChain.java</file>
+            <file>file:/C:/Users/MisterZii/source/repos/SD/PhoneHistory/PhoneHistory/src/Timer/TimeServer.java</file>
+            <file>file:/C:/Users/MisterZii/source/repos/SD/PhoneHistory/PhoneHistory/src/miners/DistributedMiner.java</file>
+            <file>file:/C:/Users/MisterZii/source/repos/SD/PhoneHistory/PhoneHistory/src/Blockchain/Block.java</file>
+            <file>file:/C:/Users/MisterZii/source/repos/SD/PhoneHistory/PhoneHistory/src/SD/IRemoteNode.java</file>
         </group>
     </open-files>
 </project-private>

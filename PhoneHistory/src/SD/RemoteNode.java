@@ -7,14 +7,23 @@ package SD;
 
 import Blockchain.Block;
 import Blockchain.BlockChain;
+import Timer.TimeServer;
+import java.io.DataInputStream;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.InetAddress;
-import java.net.UnknownHostException;
+import java.net.Socket;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import miners.DistributedMiner;
 
 /**
@@ -28,18 +37,21 @@ public class RemoteNode extends UnicastRemoteObject implements IRemoteNode {
     ServiceGUI gui;
     CopyOnWriteArraySet<IRemoteNode> nodes;
     BlockChain bc;
-    DistributedMiner miner = new DistributedMiner();
+    DistributedMiner miner;
+    
+    TimeServer tm;
 
     int port;
     String name;
 
-    public RemoteNode(int port, ServiceGUI gui, BlockChain bc) throws RemoteException, UnknownHostException, NoSuchAlgorithmException, InterruptedException {
+    public RemoteNode(int port, ServiceGUI gui, BlockChain bc) throws Exception {
         super(port);
         this.gui = gui;
         nodes = new CopyOnWriteArraySet<>();
         this.port = port;
         this.name = InetAddress.getLocalHost().getHostName();
         this.bc = bc;
+        miner = new DistributedMiner();
         //Temporário
 //        bc.addPhone("0", "Primeiro Telefone", "Apple", "iPhone", "Portugal", "Vodafone", "Venda", "Inteiro");
 //        bc.addPhone("1", "Segundo Telefone", "Samsung", "S10", "Portugal", "Desbloqueado", "Venda", "Inteiro");
@@ -81,6 +93,16 @@ public class RemoteNode extends UnicastRemoteObject implements IRemoteNode {
     public BlockChain getBlockchain() throws RemoteException {
         return bc;
     }
+    
+    @Override
+    public ArrayList<Block> getBlocksFrom(Block b) throws RemoteException {
+        return bc.getBlocksFrom(b);
+    }
+    
+    @Override
+    public Block getLastBlock() throws RemoteException {
+        return bc.getLastBlock();
+    }
 
     @Override
     public void mine(Block b) throws RemoteException {
@@ -117,13 +139,52 @@ public class RemoteNode extends UnicastRemoteObject implements IRemoteNode {
         if (bc.contains(b)) {
             return;
         }
+        try {
+            b.setTimestamp(getTimeTCP("localhost"));
+        } catch (IOException ex) {
+            Logger.getLogger(RemoteNode.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
         bc.addBlock(b);
 
-        //A rede para de minar (Problema?????????)
+        //A rede para de minar
         for (IRemoteNode node : nodes) {
             node.stopMining(b);
         }
 
     }
+
+    public static long getTimeTCP(String host) throws IOException{
+        Socket timeServer = new Socket(host, 37);
+        DataInputStream input = new DataInputStream(timeServer.getInputStream());
+        long time = (input.readInt() & 0xffffffffL);//convert to unsigned int
+        timeServer.close();
+        return (time - 2208988800L) * 1000L;
+    }
+
+    @Override
+    public void saveBlockchain() throws RemoteException {
+        try {
+            FileOutputStream fOS = new FileOutputStream("bc");
+            ObjectOutputStream objOS = new ObjectOutputStream(fOS);
+            objOS.writeObject(bc);
+            objOS.close();
+        } catch (Exception ex ) {
+            gui.displayException("Guardar Blockchain", ex);
+        } 
+    }
+
+    @Override
+    public void loadBlockchain() throws RemoteException {
+         try {
+             FileInputStream fIS = new FileInputStream("bc");
+             ObjectInputStream objIS = new ObjectInputStream(fIS);
+             bc = (BlockChain)objIS.readObject();
+             objIS.close();
+        } catch (Exception ex) {
+            gui.displayException("Carregar Blockchain", ex);
+        } 
+    }
+
+            
 }

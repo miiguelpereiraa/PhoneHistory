@@ -23,9 +23,9 @@ public class ServiceGUI extends javax.swing.JFrame implements NonceFoundListener
 
     IRemoteNode remoteObject;
     RemoteNode myObject;
-    
+
     BlockChain bc;
-    
+
     /**
      * Creates new form ServiceGUI
      */
@@ -80,6 +80,8 @@ public class ServiceGUI extends javax.swing.JFrame implements NonceFoundListener
         jScrollPane4 = new javax.swing.JScrollPane();
         txtBlockchain = new javax.swing.JTextPane();
         btGetBlockchain = new javax.swing.JButton();
+        btSaveBC = new javax.swing.JButton();
+        btLoadBC = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -187,11 +189,6 @@ public class ServiceGUI extends javax.swing.JFrame implements NonceFoundListener
             .addComponent(jScrollPane2)
         );
 
-        listNodes.setModel(new javax.swing.AbstractListModel<String>() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
-            public int getSize() { return strings.length; }
-            public String getElementAt(int i) { return strings[i]; }
-        });
         listNodes.setEnabled(false);
         jScrollPane3.setViewportView(listNodes);
 
@@ -205,7 +202,7 @@ public class ServiceGUI extends javax.swing.JFrame implements NonceFoundListener
                         .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 117, Short.MAX_VALUE))
+                        .addGap(0, 123, Short.MAX_VALUE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addContainerGap()
                         .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
@@ -295,6 +292,20 @@ public class ServiceGUI extends javax.swing.JFrame implements NonceFoundListener
             }
         });
 
+        btSaveBC.setText("save blockchain");
+        btSaveBC.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btSaveBCActionPerformed(evt);
+            }
+        });
+
+        btLoadBC.setText("load blockchain");
+        btLoadBC.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btLoadBCActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel9Layout = new javax.swing.GroupLayout(jPanel9);
         jPanel9.setLayout(jPanel9Layout);
         jPanel9Layout.setHorizontalGroup(
@@ -324,9 +335,12 @@ public class ServiceGUI extends javax.swing.JFrame implements NonceFoundListener
                                 .addComponent(txtDesc))))
                     .addComponent(jLabel13))
                 .addGap(40, 40, 40)
-                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(btGetBlockchain, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btAddBlock, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(btGetBlockchain, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btAddBlock, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(btSaveBC)
+                    .addComponent(btLoadBC))
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 466, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -358,24 +372,34 @@ public class ServiceGUI extends javax.swing.JFrame implements NonceFoundListener
                             .addGroup(jPanel9Layout.createSequentialGroup()
                                 .addGap(16, 16, 16)
                                 .addComponent(btGetBlockchain)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel10)
-                            .addComponent(txtPais, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel11)
-                            .addComponent(txtRep, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel12)
-                            .addComponent(txtMat, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(txtDesc, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel13)))
+                        .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel9Layout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(jLabel10)
+                                    .addComponent(txtPais, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(jLabel11)
+                                    .addComponent(txtRep, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addGroup(jPanel9Layout.createSequentialGroup()
+                                .addGap(24, 24, 24)
+                                .addComponent(btSaveBC)))
+                        .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel9Layout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(jLabel12)
+                                    .addComponent(txtMat, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(txtDesc, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel13)))
+                            .addGroup(jPanel9Layout.createSequentialGroup()
+                                .addGap(21, 21, 21)
+                                .addComponent(btLoadBC))))
                     .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 401, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(20, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Serviço", jPanel9);
@@ -402,7 +426,7 @@ public class ServiceGUI extends javax.swing.JFrame implements NonceFoundListener
         try {
             displayMessage("Add Block", "A adicionar o bloco");
             Phone p = myObject.bc.getNewBlock(
-            txtImei.getText(),
+                    txtImei.getText(),
                     txtDesc.getText(),
                     txtMarca.getText(),
                     txtModelo.getText(),
@@ -411,12 +435,11 @@ public class ServiceGUI extends javax.swing.JFrame implements NonceFoundListener
                     txtRep.getText(),
                     txtMat.getText());
             myObject.mine(p);
-            //myObject.addBlock(p);
             displayMessage("", "Bloco adicionado");
         } catch (Exception ex) {
             displayException("Add block", ex);
         }
-            
+
     }//GEN-LAST:event_btAddBlockActionPerformed
 
     private void txtMarcaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtMarcaActionPerformed
@@ -433,7 +456,7 @@ public class ServiceGUI extends javax.swing.JFrame implements NonceFoundListener
         } catch (RemoteException ex) {
             displayException("Display Blockchain", ex);
         }
-        
+
     }//GEN-LAST:event_btGetBlockchainActionPerformed
 
     private void btStartServerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btStartServerActionPerformed
@@ -450,15 +473,15 @@ public class ServiceGUI extends javax.swing.JFrame implements NonceFoundListener
     }//GEN-LAST:event_btStartServerActionPerformed
 
     private void btConnectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btConnectActionPerformed
-        try{
+        try {
             remoteObject = (IRemoteNode) RMI.getRemote(
-                    txtConnectAddress.getText(), 
-                    Integer.valueOf(txtConnectPort.getText()), 
+                    txtConnectAddress.getText(),
+                    Integer.valueOf(txtConnectPort.getText()),
                     RemoteNode.NAME);
             myObject.addNode(remoteObject);
             updateList();
             displayMessage("Connect to", "Conexão efectuada com sucesso.");
-        }catch(Exception ex){
+        } catch (Exception ex) {
             displayException("Connect to", ex);
         }
     }//GEN-LAST:event_btConnectActionPerformed
@@ -466,6 +489,22 @@ public class ServiceGUI extends javax.swing.JFrame implements NonceFoundListener
     private void txtConnectAddressActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtConnectAddressActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtConnectAddressActionPerformed
+
+    private void btSaveBCActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btSaveBCActionPerformed
+        try {
+            myObject.saveBlockchain();
+        } catch (RemoteException ex) {
+            Logger.getLogger(ServiceGUI.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_btSaveBCActionPerformed
+
+    private void btLoadBCActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btLoadBCActionPerformed
+        try {
+            myObject.loadBlockchain();
+        } catch (RemoteException ex) {
+            Logger.getLogger(ServiceGUI.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_btLoadBCActionPerformed
 
     /**
      * @param args the command line arguments
@@ -506,6 +545,8 @@ public class ServiceGUI extends javax.swing.JFrame implements NonceFoundListener
     private javax.swing.JButton btAddBlock;
     private javax.swing.JButton btConnect;
     private javax.swing.JButton btGetBlockchain;
+    private javax.swing.JButton btLoadBC;
+    private javax.swing.JButton btSaveBC;
     private javax.swing.JButton btStartServer;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
@@ -541,37 +582,37 @@ public class ServiceGUI extends javax.swing.JFrame implements NonceFoundListener
     private javax.swing.JTextField txtRep;
     private javax.swing.JTextField txtServerPort;
     // End of variables declaration//GEN-END:variables
-    
-    public void displayException(String source, Exception ex){
+
+    public void displayException(String source, Exception ex) {
         txtLog.setText(
                 source + "\t" + ex.getMessage() + "\n" + txtLog.getText()
         );
         Logger.getLogger(ServiceGUI.class.getName()).log(Level.SEVERE, null, ex);
     }
 
-    public void displayMessage(String source, String txt){
+    public void displayMessage(String source, String txt) {
         txtDisplay.setText(
                 source + "\t" + txt + "\n" + txtDisplay.getText()
         );
     }
-    
-    public void updateList(){
-        try{
+
+    public void updateList() {
+        try {
             DefaultListModel model = new DefaultListModel();
             for (IRemoteNode node : myObject.getNodes()) {
                 model.addElement(node.getName());
             }
             listNodes.setModel(model);
-        }catch(Exception ex){
+        } catch (Exception ex) {
             displayException("Update List", ex);
         }
     }
 
     @Override
     public void onNonceFound(Block b) {
-        try{
+        try {
             myObject.stopMining(b);
-        }catch(Exception ex){
+        } catch (Exception ex) {
             displayException("On Nonce Found", ex);
         }
     }

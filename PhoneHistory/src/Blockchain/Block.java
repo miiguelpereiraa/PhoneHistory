@@ -16,9 +16,29 @@ public class Block implements Serializable {
 
     protected String fact;
 
+    protected long timestamp;
+
     protected String hash;
     protected long nonce;
     protected int size;
+
+    /**
+     * Constroi um bloco usando o previous, o facte o size
+     *
+     * @param previous hash do bloco anterior
+     * @param data informação a guardar no bloco
+     * @throws NoSuchAlgorithmException
+     * @throws InterruptedException
+     */
+    public Block(String previous, String data) throws NoSuchAlgorithmException, InterruptedException {
+        if (previous == null) {
+            this.previous = "0";
+        } else {
+            this.previous = previous;
+        }
+        this.fact = data;
+        this.size = 2;
+    }
 
     /**
      * Obtém a hash do bloco anterior
@@ -74,25 +94,16 @@ public class Block implements Serializable {
         return size;
     }
 
-    /**
-     * Constroi um bloco usando o previous, o fact, o size e inicia os mineiros
-     *
-     * @param previous hash do bloco anterior
-     * @param data informação a guardar no bloco
-     * @throws NoSuchAlgorithmException
-     * @throws InterruptedException
-     */
-    public Block(String previous, String data) throws NoSuchAlgorithmException, InterruptedException {
-        if (previous == null) {
-            this.previous = "0";
-        } else {
-            this.previous = previous;
-        }
-        this.fact = data;
-        this.size = 2;
-        //Miner.mine(this);
+    public long getTimestamp() {
+        return timestamp;
     }
 
+    public void setTimestamp(long timestamp) {
+        this.timestamp = timestamp;
+    }
+
+    
+    
     //VER ESTE MÉTODO
     public String calcHash() throws NoSuchAlgorithmException {
         MessageDigest hasher = MessageDigest.getInstance("SHA-256");
@@ -129,7 +140,6 @@ public class Block implements Serializable {
 //    public boolean equals(Object obj) {
 //        return obj.toString().equals(obj.toString());
 //    }
-    
     public boolean equals(Block b) {
         return this.toString().equals(b.toString());
     }

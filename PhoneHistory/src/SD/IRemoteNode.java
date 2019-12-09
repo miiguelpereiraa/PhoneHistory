@@ -9,6 +9,7 @@ import Blockchain.Block;
 import Blockchain.BlockChain;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -17,16 +18,21 @@ import java.util.List;
  */
 public interface IRemoteNode extends Remote {
 
-    String getName() throws RemoteException;
+    public String getName() throws RemoteException;
     
-    void addNode(IRemoteNode node) throws RemoteException;
+    public void addNode(IRemoteNode node) throws RemoteException;
 
-    List<IRemoteNode> getNodes() throws RemoteException;
+    public List<IRemoteNode> getNodes() throws RemoteException;
 
     //void addBlock(Phone p) throws RemoteException;
-    void addBlock(Block b) throws RemoteException;
+    public void addBlock(Block b) throws RemoteException;
 
     public BlockChain getBlockchain() throws RemoteException;
+    public ArrayList<Block> getBlocksFrom(Block b) throws RemoteException;
+    public Block getLastBlock() throws RemoteException;
+    
+    public void saveBlockchain() throws RemoteException;
+    public void loadBlockchain() throws RemoteException;
 
     public void mine(Block b) throws RemoteException;
 
