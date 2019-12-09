@@ -81,7 +81,6 @@ public class ServiceGUI extends javax.swing.JFrame implements NonceFoundListener
         txtBlockchain = new javax.swing.JTextPane();
         btGetBlockchain = new javax.swing.JButton();
         btSaveBC = new javax.swing.JButton();
-        btLoadBC = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -299,13 +298,6 @@ public class ServiceGUI extends javax.swing.JFrame implements NonceFoundListener
             }
         });
 
-        btLoadBC.setText("load blockchain");
-        btLoadBC.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btLoadBCActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout jPanel9Layout = new javax.swing.GroupLayout(jPanel9);
         jPanel9.setLayout(jPanel9Layout);
         jPanel9Layout.setHorizontalGroup(
@@ -339,8 +331,7 @@ public class ServiceGUI extends javax.swing.JFrame implements NonceFoundListener
                     .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                         .addComponent(btGetBlockchain, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btAddBlock, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addComponent(btSaveBC)
-                    .addComponent(btLoadBC))
+                    .addComponent(btSaveBC))
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 466, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -385,19 +376,14 @@ public class ServiceGUI extends javax.swing.JFrame implements NonceFoundListener
                             .addGroup(jPanel9Layout.createSequentialGroup()
                                 .addGap(24, 24, 24)
                                 .addComponent(btSaveBC)))
-                        .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel9Layout.createSequentialGroup()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(jLabel12)
-                                    .addComponent(txtMat, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(txtDesc, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jLabel13)))
-                            .addGroup(jPanel9Layout.createSequentialGroup()
-                                .addGap(21, 21, 21)
-                                .addComponent(btLoadBC))))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel12)
+                            .addComponent(txtMat, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(txtDesc, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel13)))
                     .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 401, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(20, Short.MAX_VALUE))
         );
@@ -481,6 +467,9 @@ public class ServiceGUI extends javax.swing.JFrame implements NonceFoundListener
             myObject.addNode(remoteObject);
             updateList();
             displayMessage("Connect to", "Conexão efectuada com sucesso.");
+            //Faz load da blockchain guardada
+            myObject.loadBlockchain();
+            //Falta sincronizar a blockchain
         } catch (Exception ex) {
             displayException("Connect to", ex);
         }
@@ -497,14 +486,6 @@ public class ServiceGUI extends javax.swing.JFrame implements NonceFoundListener
             Logger.getLogger(ServiceGUI.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_btSaveBCActionPerformed
-
-    private void btLoadBCActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btLoadBCActionPerformed
-        try {
-            myObject.loadBlockchain();
-        } catch (RemoteException ex) {
-            Logger.getLogger(ServiceGUI.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }//GEN-LAST:event_btLoadBCActionPerformed
 
     /**
      * @param args the command line arguments
@@ -545,7 +526,6 @@ public class ServiceGUI extends javax.swing.JFrame implements NonceFoundListener
     private javax.swing.JButton btAddBlock;
     private javax.swing.JButton btConnect;
     private javax.swing.JButton btGetBlockchain;
-    private javax.swing.JButton btLoadBC;
     private javax.swing.JButton btSaveBC;
     private javax.swing.JButton btStartServer;
     private javax.swing.JLabel jLabel1;
