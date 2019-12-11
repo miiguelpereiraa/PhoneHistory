@@ -69,6 +69,13 @@ public class RemoteNode extends UnicastRemoteObject implements IRemoteNode {
         nodes.add(node);
         gui.displayMessage("Add node", "node" + node.getName());
     }
+    
+    @Override
+    public void removeNode(IRemoteNode node) throws RemoteException {
+        nodes.remove(node);
+        gui.displayMessage("Remove node", "node" + node.getName());
+    }
+
 
     @Override
     public List<IRemoteNode> getNodes() throws RemoteException {
@@ -211,5 +218,6 @@ public class RemoteNode extends UnicastRemoteObject implements IRemoteNode {
         } 
     }
 
+    
                 
 }

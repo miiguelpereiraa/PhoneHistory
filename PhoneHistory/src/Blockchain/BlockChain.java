@@ -12,6 +12,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
  */
 public class BlockChain implements Serializable {
 
+     private static final long SerialVersionUID = 201912111;
+     
     //Blockchain
     //protected CopyOnWriteArrayList<Phone> chain = new CopyOnWriteArrayList<>();
     protected CopyOnWriteArrayList<Block> chain = new CopyOnWriteArrayList<>();

@@ -21,6 +21,8 @@ public interface IRemoteNode extends Remote {
     public String getName() throws RemoteException;
     
     public void addNode(IRemoteNode node) throws RemoteException;
+    
+    public void removeNode(IRemoteNode node) throws RemoteException;
 
     public List<IRemoteNode> getNodes() throws RemoteException;
 

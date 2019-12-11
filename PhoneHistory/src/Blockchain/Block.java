@@ -11,6 +11,8 @@ import java.util.Base64;
  * and open the template in the editor.
  */
 public class Block implements Serializable {
+    
+     private static final long SerialVersionUID = 201912112;
 
     protected String previous;
 

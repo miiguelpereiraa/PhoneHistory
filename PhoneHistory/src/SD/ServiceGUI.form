@@ -55,7 +55,7 @@
                               <Component id="jPanel3" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="jPanel4" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace min="0" pref="123" max="32767" attributes="0"/>
+                              <EmptySpace min="0" pref="148" max="32767" attributes="0"/>
                           </Group>
                           <Group type="102" attributes="0">
                               <EmptySpace max="-2" attributes="0"/>
@@ -77,7 +77,7 @@
                           </Group>
                           <Group type="102" attributes="0">
                               <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                                  <Component id="jPanel3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="jPanel3" min="-2" pref="196" max="-2" attributes="0"/>
                                   <Group type="102" attributes="0">
                                       <EmptySpace max="-2" attributes="0"/>
                                       <Component id="jPanel4" max="32767" attributes="0"/>
@@ -98,12 +98,13 @@
               <Layout>
                 <DimensionLayout dim="0">
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Group type="102" alignment="0" attributes="0">
+                      <Group type="102" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" max="-2" attributes="0">
                               <Component id="txtConnectAddress" alignment="1" pref="200" max="32767" attributes="0"/>
                               <Component id="txtConnectPort" alignment="1" max="32767" attributes="0"/>
                               <Component id="btConnect" max="32767" attributes="0"/>
+                              <Component id="btDisconnect" max="32767" attributes="0"/>
                           </Group>
                           <EmptySpace pref="21" max="32767" attributes="0"/>
                       </Group>
@@ -115,9 +116,11 @@
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="txtConnectAddress" min="-2" pref="60" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="txtConnectPort" pref="58" max="32767" attributes="0"/>
-                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                          <Component id="txtConnectPort" max="32767" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
                           <Component id="btConnect" min="-2" pref="32" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="btDisconnect" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                       </Group>
                   </Group>
@@ -159,6 +162,14 @@
                   </Properties>
                   <Events>
                     <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btConnectActionPerformed"/>
+                  </Events>
+                </Component>
+                <Component class="javax.swing.JButton" name="btDisconnect">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="Disconnect"/>
+                  </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btDisconnectActionPerformed"/>
                   </Events>
                 </Component>
               </SubComponents>

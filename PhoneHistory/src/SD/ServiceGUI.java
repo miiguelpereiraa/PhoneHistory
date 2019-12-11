@@ -49,6 +49,7 @@ public class ServiceGUI extends javax.swing.JFrame implements NonceFoundListener
         txtConnectAddress = new javax.swing.JTextField();
         txtConnectPort = new javax.swing.JTextField();
         btConnect = new javax.swing.JButton();
+        btDisconnect = new javax.swing.JButton();
         jPanel4 = new javax.swing.JPanel();
         txtServerPort = new javax.swing.JTextField();
         btStartServer = new javax.swing.JButton();
@@ -104,6 +105,13 @@ public class ServiceGUI extends javax.swing.JFrame implements NonceFoundListener
             }
         });
 
+        btDisconnect.setText("Disconnect");
+        btDisconnect.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btDisconnectActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
@@ -113,7 +121,8 @@ public class ServiceGUI extends javax.swing.JFrame implements NonceFoundListener
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(txtConnectAddress, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE)
                     .addComponent(txtConnectPort, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(btConnect, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(btConnect, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btDisconnect, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(21, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
@@ -122,9 +131,11 @@ public class ServiceGUI extends javax.swing.JFrame implements NonceFoundListener
                 .addContainerGap()
                 .addComponent(txtConnectAddress, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(txtConnectPort, javax.swing.GroupLayout.DEFAULT_SIZE, 58, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(txtConnectPort)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btConnect, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btDisconnect)
                 .addContainerGap())
         );
 
@@ -201,7 +212,7 @@ public class ServiceGUI extends javax.swing.JFrame implements NonceFoundListener
                         .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 123, Short.MAX_VALUE))
+                        .addGap(0, 148, Short.MAX_VALUE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addContainerGap()
                         .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
@@ -217,7 +228,7 @@ public class ServiceGUI extends javax.swing.JFrame implements NonceFoundListener
                         .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 410, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 196, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addContainerGap()
                                 .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
@@ -488,6 +499,16 @@ public class ServiceGUI extends javax.swing.JFrame implements NonceFoundListener
         }
     }//GEN-LAST:event_btSaveBCActionPerformed
 
+    private void btDisconnectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btDisconnectActionPerformed
+        try {
+            myObject.saveBlockchain();
+            myObject.removeNode(remoteObject);
+            updateList();
+        } catch (Exception ex) {
+            displayException("Disconnect", ex);
+        }
+    }//GEN-LAST:event_btDisconnectActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -526,6 +547,7 @@ public class ServiceGUI extends javax.swing.JFrame implements NonceFoundListener
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btAddBlock;
     private javax.swing.JButton btConnect;
+    private javax.swing.JButton btDisconnect;
     private javax.swing.JButton btGetBlockchain;
     private javax.swing.JButton btSaveBC;
     private javax.swing.JButton btStartServer;
