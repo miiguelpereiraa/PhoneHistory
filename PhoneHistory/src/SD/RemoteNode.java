@@ -103,6 +103,31 @@ public class RemoteNode extends UnicastRemoteObject implements IRemoteNode {
     public Block getLastBlock() throws RemoteException {
         return bc.getLastBlock();
     }
+    
+    @Override
+    public void syncBlockchain() throws RemoteException {
+        long timestamp = 0;
+        String nodeName = "";
+        //Verifica qual o node que possui a blockchain com o último bloco mais recente;
+        for (IRemoteNode node : nodes) {
+            if(node.getBlockchain().size() != 0){
+                if (node.getLastBlock().getTimestamp() > timestamp) {
+                    timestamp = node.getLastBlock().getTimestamp();
+                    nodeName = node.getName();
+                }
+            }
+            
+        }
+        //Sincronizar a blockchain
+        for (IRemoteNode node : nodes) {
+            if(node.getName().equals(nodeName)){
+                if(bc.isEmpty())
+                    bc = node.getBlockchain();
+                else
+                    bc.addBlockList(node.getBlocksFrom(bc.getLastBlock()));
+            }
+        }
+    }
 
     @Override
     public void mine(Block b) throws RemoteException {
@@ -140,7 +165,7 @@ public class RemoteNode extends UnicastRemoteObject implements IRemoteNode {
             return;
         }
         try {
-            b.setTimestamp(getTimeTCP("localhost"));
+            b.setTimestamp(getTimeTCP("192.168.1.122"));
         } catch (IOException ex) {
             Logger.getLogger(RemoteNode.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -186,5 +211,5 @@ public class RemoteNode extends UnicastRemoteObject implements IRemoteNode {
         } 
     }
 
-            
+                
 }

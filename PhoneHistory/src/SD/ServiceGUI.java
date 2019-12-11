@@ -469,7 +469,8 @@ public class ServiceGUI extends javax.swing.JFrame implements NonceFoundListener
             displayMessage("Connect to", "Conexão efectuada com sucesso.");
             //Faz load da blockchain guardada
             myObject.loadBlockchain();
-            //Falta sincronizar a blockchain
+            //Sincronizar a blockchain
+            myObject.syncBlockchain();
         } catch (Exception ex) {
             displayException("Connect to", ex);
         }

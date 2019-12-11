@@ -10,7 +10,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-public class BlockChain implements Serializable{
+public class BlockChain implements Serializable {
 
     //Blockchain
     //protected CopyOnWriteArrayList<Phone> chain = new CopyOnWriteArrayList<>();
@@ -53,6 +53,12 @@ public class BlockChain implements Serializable{
         }
     }
 
+    public void addBlockList(ArrayList<Block> blockList) {
+        for (Block block : blockList) {
+            chain.add(block);
+        }
+    }
+
     /**
      * Obtém o último bloco da blockchain
      *
@@ -75,12 +81,15 @@ public class BlockChain implements Serializable{
     public ArrayList<Block> getBlocksFrom(Block b) {
         ArrayList<Block> aux = new ArrayList<>();
         int pos = 0;
-        for (int i = 0; i < chain.size() - 1; i++) {
-            if (chain.get(i).hash.equals(b.hash)) {
-                pos = i;
-                break;
+        if (!b.equals(null)) {
+            for (int i = 0; i < chain.size() - 1; i++) {
+                if (chain.get(i).hash.equals(b.hash)) {
+                    pos = i + 1;
+                    break;
+                }
             }
         }
+
         for (int i = pos; i < chain.size() - 1; i++) {
             aux.add(chain.get(i));
         }
@@ -111,5 +120,13 @@ public class BlockChain implements Serializable{
             }
         }
         return false;
+    }
+
+    public int size() {
+        return chain.size();
+    }
+    
+    public boolean isEmpty(){
+        return chain.isEmpty();
     }
 }
