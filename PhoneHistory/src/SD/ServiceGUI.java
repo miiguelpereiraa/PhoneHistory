@@ -31,6 +31,7 @@ public class ServiceGUI extends javax.swing.JFrame implements NonceFoundListener
      */
     public ServiceGUI() {
         initComponents();
+        txtMinAnim.setVisible(false);
         bc = new BlockChain();
     }
 
