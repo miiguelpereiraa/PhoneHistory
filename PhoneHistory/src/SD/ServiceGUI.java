@@ -82,6 +82,7 @@ public class ServiceGUI extends javax.swing.JFrame implements NonceFoundListener
         txtBlockchain = new javax.swing.JTextPane();
         btGetBlockchain = new javax.swing.JButton();
         btSaveBC = new javax.swing.JButton();
+        txtMinAnim = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -195,7 +196,7 @@ public class ServiceGUI extends javax.swing.JFrame implements NonceFoundListener
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 214, Short.MAX_VALUE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 211, Short.MAX_VALUE)
             .addComponent(jScrollPane2)
         );
 
@@ -309,6 +310,8 @@ public class ServiceGUI extends javax.swing.JFrame implements NonceFoundListener
             }
         });
 
+        txtMinAnim.setIcon(new javax.swing.ImageIcon(getClass().getResource("/myUtils/giphy.gif"))); // NOI18N
+
         javax.swing.GroupLayout jPanel9Layout = new javax.swing.GroupLayout(jPanel9);
         jPanel9.setLayout(jPanel9Layout);
         jPanel9Layout.setHorizontalGroup(
@@ -318,31 +321,34 @@ public class ServiceGUI extends javax.swing.JFrame implements NonceFoundListener
                 .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel9Layout.createSequentialGroup()
                         .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel11)
-                            .addComponent(jLabel10)
-                            .addComponent(jLabel12)
-                            .addComponent(jLabel9)
-                            .addComponent(jLabel8)
-                            .addComponent(jLabel7)
-                            .addComponent(jLabel1))
-                        .addGap(18, 18, 18)
+                            .addGroup(jPanel9Layout.createSequentialGroup()
+                                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel11)
+                                    .addComponent(jLabel10)
+                                    .addComponent(jLabel12)
+                                    .addComponent(jLabel9)
+                                    .addComponent(jLabel8)
+                                    .addComponent(jLabel7)
+                                    .addComponent(jLabel1))
+                                .addGap(18, 18, 18)
+                                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(txtImei, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                        .addComponent(txtMarca, javax.swing.GroupLayout.DEFAULT_SIZE, 120, Short.MAX_VALUE)
+                                        .addComponent(txtModelo)
+                                        .addComponent(txtRede)
+                                        .addComponent(txtMat)
+                                        .addComponent(txtPais)
+                                        .addComponent(txtRep)
+                                        .addComponent(txtDesc))))
+                            .addComponent(jLabel13))
+                        .addGap(40, 40, 40)
                         .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtImei, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addComponent(txtMarca, javax.swing.GroupLayout.DEFAULT_SIZE, 120, Short.MAX_VALUE)
-                                .addComponent(txtModelo)
-                                .addComponent(txtRede)
-                                .addComponent(txtMat)
-                                .addComponent(txtPais)
-                                .addComponent(txtRep)
-                                .addComponent(txtDesc))))
-                    .addComponent(jLabel13))
-                .addGap(40, 40, 40)
-                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(btGetBlockchain, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btAddBlock, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addComponent(btSaveBC))
+                                .addComponent(btGetBlockchain, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(btAddBlock, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(btSaveBC)))
+                    .addComponent(txtMinAnim))
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 466, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -352,7 +358,7 @@ public class ServiceGUI extends javax.swing.JFrame implements NonceFoundListener
             .addGroup(jPanel9Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel9Layout.createSequentialGroup()
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel9Layout.createSequentialGroup()
                         .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(txtImei, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel1)
@@ -394,9 +400,11 @@ public class ServiceGUI extends javax.swing.JFrame implements NonceFoundListener
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(txtDesc, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel13)))
+                            .addComponent(jLabel13))
+                        .addGap(35, 35, 35)
+                        .addComponent(txtMinAnim, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 401, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(20, Short.MAX_VALUE))
+                .addContainerGap(24, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Serviço", jPanel9);
@@ -409,7 +417,7 @@ public class ServiceGUI extends javax.swing.JFrame implements NonceFoundListener
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jTabbedPane1)
+            .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 468, Short.MAX_VALUE)
         );
 
         pack();
@@ -500,13 +508,7 @@ public class ServiceGUI extends javax.swing.JFrame implements NonceFoundListener
     }//GEN-LAST:event_btSaveBCActionPerformed
 
     private void btDisconnectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btDisconnectActionPerformed
-        try {
-            myObject.saveBlockchain();
-            myObject.removeNode(remoteObject);
-            updateList();
-        } catch (Exception ex) {
-            displayException("Disconnect", ex);
-        }
+        // TODO
     }//GEN-LAST:event_btDisconnectActionPerformed
 
     /**
@@ -579,6 +581,7 @@ public class ServiceGUI extends javax.swing.JFrame implements NonceFoundListener
     private javax.swing.JTextArea txtLog;
     private javax.swing.JTextField txtMarca;
     private javax.swing.JTextField txtMat;
+    private javax.swing.JLabel txtMinAnim;
     private javax.swing.JTextField txtModelo;
     private javax.swing.JTextField txtPais;
     private javax.swing.JTextField txtRede;
@@ -618,6 +621,10 @@ public class ServiceGUI extends javax.swing.JFrame implements NonceFoundListener
         } catch (Exception ex) {
             displayException("On Nonce Found", ex);
         }
+    }
+    
+    public void setWorking(boolean state){
+        txtMinAnim.setVisible(state);
     }
 
 }

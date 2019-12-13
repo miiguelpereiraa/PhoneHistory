@@ -39,7 +39,7 @@ public class Block implements Serializable {
             this.previous = previous;
         }
         this.fact = data;
-        this.size = 2;
+        this.size = 4;
     }
 
     /**

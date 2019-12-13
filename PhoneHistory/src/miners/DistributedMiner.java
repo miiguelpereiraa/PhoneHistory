@@ -6,6 +6,9 @@
 package miners;
 
 import Blockchain.Block;
+import java.io.DataInputStream;
+import java.io.IOException;
+import java.net.Socket;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.Security;
@@ -44,6 +47,14 @@ public class DistributedMiner {
     public boolean isWorking() {
         return isWorking.get();
     }
+    
+    public static long getTimeTCP(String host) throws IOException{
+        Socket timeServer = new Socket(host, 37);
+        DataInputStream input = new DataInputStream(timeServer.getInputStream());
+        long time = (input.readInt() & 0xffffffffL);//convert to unsigned int
+        timeServer.close();
+        return (time - 2208988800L) * 1000L;
+    }
 
     public void mine(Block blk, NonceFoundListener listener) throws Exception {
         
@@ -64,6 +75,7 @@ public class DistributedMiner {
                 //nonce = num;
                 blk.setNonce(num);
                 blk.setHash(txtH);
+                blk.setTimestamp(getTimeTCP("192.168.1.180"));
                 //isWorking.set(false);
                 listener.onNonceFound(blk);
             }

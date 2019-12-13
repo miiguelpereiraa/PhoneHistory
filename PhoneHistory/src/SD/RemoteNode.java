@@ -143,6 +143,7 @@ public class RemoteNode extends UnicastRemoteObject implements IRemoteNode {
             gui.displayMessage("", "O mineiro está ocupado");
             return;
         }
+        gui.setWorking(true);
         new Thread(
                 () -> {
                     try {
@@ -166,16 +167,17 @@ public class RemoteNode extends UnicastRemoteObject implements IRemoteNode {
     @Override
     public void stopMining(Block b) throws RemoteException {
         miner.stopMining();
+        gui.setWorking(false);
 
         //Se já tiver o bloco, este não é adicionado
         if (bc.contains(b)) {
             return;
         }
-        try {
-            b.setTimestamp(getTimeTCP("192.168.1.122"));
-        } catch (IOException ex) {
-            Logger.getLogger(RemoteNode.class.getName()).log(Level.SEVERE, null, ex);
-        }
+//        try {
+//            b.setTimestamp(getTimeTCP("192.168.1.180"));
+//        } catch (IOException ex) {
+//            Logger.getLogger(RemoteNode.class.getName()).log(Level.SEVERE, null, ex);
+//        }
 
         bc.addBlock(b);
 
@@ -186,13 +188,13 @@ public class RemoteNode extends UnicastRemoteObject implements IRemoteNode {
 
     }
 
-    public static long getTimeTCP(String host) throws IOException{
-        Socket timeServer = new Socket(host, 37);
-        DataInputStream input = new DataInputStream(timeServer.getInputStream());
-        long time = (input.readInt() & 0xffffffffL);//convert to unsigned int
-        timeServer.close();
-        return (time - 2208988800L) * 1000L;
-    }
+//    public static long getTimeTCP(String host) throws IOException{
+//        Socket timeServer = new Socket(host, 37);
+//        DataInputStream input = new DataInputStream(timeServer.getInputStream());
+//        long time = (input.readInt() & 0xffffffffL);//convert to unsigned int
+//        timeServer.close();
+//        return (time - 2208988800L) * 1000L;
+//    }
 
     @Override
     public void saveBlockchain() throws RemoteException {
