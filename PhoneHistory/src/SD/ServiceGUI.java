@@ -466,16 +466,18 @@ public class ServiceGUI extends javax.swing.JFrame implements NonceFoundListener
     }//GEN-LAST:event_btGetBlockchainActionPerformed
 
     private void btStartServerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btStartServerActionPerformed
-
-        try {
-            int port = Integer.parseInt(txtServerPort.getText());
-            myObject = new RemoteNode(port, this, bc);
-            RMI.startRemoteObject(myObject, port, RemoteNode.NAME);
-            displayMessage("Start Server", "Objecto remoto disponível");
-        } catch (Exception ex) {
-            displayException("Start Server", ex);
-        }
-
+        AddressAnouncer anouncer = new AddressAnouncer("192.168.1.180", remoteObject);
+        anouncer.start();
+        AddressReceiver receiver = new AddressReceiver(remoteObject);
+        receiver.start();
+//        try {
+//            int port = Integer.parseInt(txtServerPort.getText());
+//            myObject = new RemoteNode(port, this, bc);
+//            RMI.startRemoteObject(myObject, port, RemoteNode.NAME);
+//            displayMessage("Start Server", "Objecto remoto disponível");
+//        } catch (Exception ex) {
+//            displayException("Start Server", ex);
+//        }
     }//GEN-LAST:event_btStartServerActionPerformed
 
     private void btConnectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btConnectActionPerformed
