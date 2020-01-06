@@ -31,6 +31,7 @@ public interface IRemoteNode extends Remote {
 
     public BlockChain getBlockchain() throws RemoteException;
     public ArrayList<Block> getBlocksFrom(Block b) throws RemoteException;
+    public String getByImei(String imei) throws RemoteException;
     public Block getLastBlock() throws RemoteException;
     public void syncBlockchain() throws RemoteException;
     

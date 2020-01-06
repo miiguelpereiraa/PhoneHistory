@@ -17,21 +17,20 @@ import java.util.logging.Logger;
  */
 public class AddressAnouncer extends  Thread{
 
-    IRemoteNode nodes;
-    String address;
+    String ip;
     final int SOCKET_PORT = 10010;
     
-    public AddressAnouncer(String address, IRemoteNode nodes) {
-        this.nodes = nodes;
-        this.address = address;
-        //start();
+    public AddressAnouncer(String ip) {
+        this.ip = ip;
     }
     
     public void run(){
         
         try {
             DatagramSocket socket = new DatagramSocket();
-            DatagramPacket data = new DatagramPacket(nodes.getName().getBytes(), nodes.getName().getBytes().length, SOCKET_PORT);
+            //InetAddress addr = InetAddress.getByName("239.1.1.1");
+            InetAddress addr = InetAddress.getByName("255.255.255.255");
+            DatagramPacket data = new DatagramPacket(ip.getBytes(), ip.getBytes().length,addr, SOCKET_PORT);
             while (true) {                
                 socket.send(data);
                 sleep(1000);

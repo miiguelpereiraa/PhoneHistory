@@ -75,7 +75,7 @@ public class DistributedMiner {
                 //nonce = num;
                 blk.setNonce(num);
                 blk.setHash(txtH);
-                blk.setTimestamp(getTimeTCP("192.168.1.180"));
+                blk.setTimestamp(getTimeTCP("192.168.1.123"));
                 //isWorking.set(false);
                 listener.onNonceFound(blk);
             }

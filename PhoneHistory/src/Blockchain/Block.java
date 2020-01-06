@@ -59,6 +59,10 @@ public class Block implements Serializable {
     public String getFact() {
         return fact;
     }
+    
+    public String getImei(){
+        return fact.split("#")[0];
+    }
 
     /**
      * Definir a hash do bloco

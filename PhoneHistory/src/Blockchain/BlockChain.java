@@ -12,8 +12,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
  */
 public class BlockChain implements Serializable {
 
-     private static final long SerialVersionUID = 201912111;
-     
+    private static final long SerialVersionUID = 201912111;
+
     //Blockchain
     //protected CopyOnWriteArrayList<Phone> chain = new CopyOnWriteArrayList<>();
     protected CopyOnWriteArrayList<Block> chain = new CopyOnWriteArrayList<>();
@@ -98,6 +98,27 @@ public class BlockChain implements Serializable {
         return aux;
     }
 
+    public String getByImei(String imei) {
+        ArrayList<Block> aux = new ArrayList<>();
+        String result = new String();
+        int pos = 0;
+        for (int i = 0; i < chain.size() - 1; i++) {
+            if (chain.get(i).getImei().equals(imei)) {
+                //PROBLEMA, SÓ ESTÁ A DEVOLVER 1 REGISTO, SE HOUVER MAIS QUE 1 PARA O MESMO IMEI
+                if(!aux.contains(chain.get(i)))
+                    aux.add(chain.get(i));
+            }
+        }
+        for (Block block : aux) {
+            result += block.getFact() + ";";
+        }
+        //Retirar o ultimo ;
+        if(result != "")
+            return result.substring(0, result.length()-1);
+        else
+            return null;
+    }
+
     /**
      * Imprime os blocos da blockchain
      */
@@ -127,8 +148,8 @@ public class BlockChain implements Serializable {
     public int size() {
         return chain.size();
     }
-    
-    public boolean isEmpty(){
+
+    public boolean isEmpty() {
         return chain.isEmpty();
     }
 }

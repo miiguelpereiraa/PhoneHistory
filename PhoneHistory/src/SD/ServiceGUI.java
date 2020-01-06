@@ -8,7 +8,15 @@ package SD;
 import Blockchain.Block;
 import Blockchain.BlockChain;
 import Blockchain.Phone;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.rmi.RemoteException;
+import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.Base64;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
@@ -25,6 +33,77 @@ public class ServiceGUI extends javax.swing.JFrame implements NonceFoundListener
     RemoteNode myObject;
 
     BlockChain bc;
+
+    ServerSocket clientListener;
+    
+    public String doService(String...param) throws NoSuchAlgorithmException, InterruptedException, RemoteException{
+        String cmd = param[0].toUpperCase();
+        switch(cmd){
+            case "LOGIN":
+                return param[1] + "ACCEPTED";
+            case "ADDREG":
+                Phone p = myObject.bc.getNewBlock(
+                    param[1],
+                    param[2],
+                    param[3],
+                    param[4],
+                    param[5],
+                    param[6],
+                    param[7],
+                    param[8]);
+                    myObject.mine(p);
+                    return "Informação registada";
+            case "PESQUISAR":
+                String result = myObject.getByImei(param[1]);
+                if(result != "")
+                    return result;
+                else
+                    return null;
+            default:
+                return "UNKNOWN COMMAND:" + cmd;
+        }
+    }
+
+    public void startClientListener(int port) {
+        new Thread(
+                () -> {
+            try {
+                //código executado pela Thread
+                //Ligar o listener
+                clientListener = new ServerSocket(port);
+                while (true) {                    
+                    //Escutar os clientes
+                    Socket client = clientListener.accept();
+                    //Extrair o endereço do cliente
+                    String txtClient = client.getInetAddress() + ":" + client.getPort();
+                    //Informar a interface
+                    //displayMessage("Client accepted", txtClient);
+                    //Abrir as streams IO
+                    DataInputStream in = new DataInputStream(client.getInputStream());
+                    DataOutputStream out = new DataOutputStream(client.getOutputStream());
+                    //Ler a a mensagem
+                    //String msg = in.readUTF();
+                    byte[] b = Base64.getDecoder().decode(in.readUTF());
+                    String msg = new String(b);
+                    //Executar o serviço
+                    msg = doService(msg.split(" "));
+                    //Devolver a resposta
+                    out.writeUTF(msg);
+                    //Fechar as streams
+                    in.close();
+                    out.close();
+                    client.close();
+                    //displayMessage("Service Done", txtClient);
+                }
+            } catch (IOException ex) {
+                displayException("Cliente listener", ex);
+            } catch (NoSuchAlgorithmException ex) {
+                Logger.getLogger(ServiceGUI.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(ServiceGUI.class.getName()).log(Level.SEVERE, null, ex);
+            }
+                }).start();
+    }
 
     /**
      * Creates new form ServiceGUI
@@ -47,13 +126,11 @@ public class ServiceGUI extends javax.swing.JFrame implements NonceFoundListener
         jTabbedPane1 = new javax.swing.JTabbedPane();
         jPanel1 = new javax.swing.JPanel();
         jPanel3 = new javax.swing.JPanel();
-        txtConnectAddress = new javax.swing.JTextField();
-        txtConnectPort = new javax.swing.JTextField();
-        btConnect = new javax.swing.JButton();
-        btDisconnect = new javax.swing.JButton();
-        jPanel4 = new javax.swing.JPanel();
+        txtServerAddress = new javax.swing.JTextField();
         txtServerPort = new javax.swing.JTextField();
         btStartServer = new javax.swing.JButton();
+        btDisconnect = new javax.swing.JButton();
+        jPanel4 = new javax.swing.JPanel();
         jPanel5 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         txtLog = new javax.swing.JTextArea();
@@ -87,23 +164,23 @@ public class ServiceGUI extends javax.swing.JFrame implements NonceFoundListener
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        txtConnectAddress.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
-        txtConnectAddress.setText("localhost");
-        txtConnectAddress.setBorder(javax.swing.BorderFactory.createTitledBorder("Address"));
-        txtConnectAddress.addActionListener(new java.awt.event.ActionListener() {
+        txtServerAddress.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        txtServerAddress.setText("localhost");
+        txtServerAddress.setBorder(javax.swing.BorderFactory.createTitledBorder("Address"));
+        txtServerAddress.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtConnectAddressActionPerformed(evt);
+                txtServerAddressActionPerformed(evt);
             }
         });
 
-        txtConnectPort.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
-        txtConnectPort.setText("10010");
-        txtConnectPort.setBorder(javax.swing.BorderFactory.createTitledBorder("Port Number"));
+        txtServerPort.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        txtServerPort.setText("10010");
+        txtServerPort.setBorder(javax.swing.BorderFactory.createTitledBorder("Port Number"));
 
-        btConnect.setText("Connect");
-        btConnect.addActionListener(new java.awt.event.ActionListener() {
+        btStartServer.setText("Start Server");
+        btStartServer.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btConnectActionPerformed(evt);
+                btStartServerActionPerformed(evt);
             }
         });
 
@@ -121,9 +198,9 @@ public class ServiceGUI extends javax.swing.JFrame implements NonceFoundListener
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(txtConnectAddress, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE)
-                    .addComponent(txtConnectPort, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(btConnect, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(txtServerAddress, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE)
+                    .addComponent(txtServerPort, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(btStartServer, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(btDisconnect, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(21, Short.MAX_VALUE))
         );
@@ -131,49 +208,25 @@ public class ServiceGUI extends javax.swing.JFrame implements NonceFoundListener
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(txtConnectAddress, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(txtServerAddress, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(txtConnectPort)
+                .addComponent(txtServerPort)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btConnect, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btStartServer, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btDisconnect)
                 .addContainerGap())
         );
 
-        txtServerPort.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
-        txtServerPort.setText("10010");
-        txtServerPort.setBorder(javax.swing.BorderFactory.createTitledBorder("Port Number"));
-        txtServerPort.setPreferredSize(new java.awt.Dimension(200, 42));
-
-        btStartServer.setText("Start Server");
-        btStartServer.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btStartServerActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel4Layout.createSequentialGroup()
-                .addGap(34, 34, 34)
-                .addComponent(txtServerPort, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(36, Short.MAX_VALUE))
-            .addGroup(jPanel4Layout.createSequentialGroup()
-                .addGap(18, 18, 18)
-                .addComponent(btStartServer, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
+            .addGap(0, 270, Short.MAX_VALUE)
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel4Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(txtServerPort, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(btStartServer, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+            .addGap(0, 0, Short.MAX_VALUE)
         );
 
         txtLog.setColumns(20);
@@ -418,7 +471,7 @@ public class ServiceGUI extends javax.swing.JFrame implements NonceFoundListener
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 468, Short.MAX_VALUE)
+            .addComponent(jTabbedPane1)
         );
 
         pack();
@@ -466,41 +519,44 @@ public class ServiceGUI extends javax.swing.JFrame implements NonceFoundListener
     }//GEN-LAST:event_btGetBlockchainActionPerformed
 
     private void btStartServerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btStartServerActionPerformed
-        AddressAnouncer anouncer = new AddressAnouncer("192.168.1.180", remoteObject);
-        anouncer.start();
-        AddressReceiver receiver = new AddressReceiver(remoteObject);
-        receiver.start();
 //        try {
-//            int port = Integer.parseInt(txtServerPort.getText());
-//            myObject = new RemoteNode(port, this, bc);
-//            RMI.startRemoteObject(myObject, port, RemoteNode.NAME);
-//            displayMessage("Start Server", "Objecto remoto disponível");
+//            remoteObject = (IRemoteNode) RMI.getRemote(
+//                    txtConnectAddress.getText(),
+//                    Integer.valueOf(txtConnectPort.getText()),
+//                    RemoteNode.NAME);
+//            myObject.addNode(remoteObject);
+//            updateList();
+//            displayMessage("Connect to", "Conexão efectuada com sucesso.");
+//            //Faz load da blockchain guardada
+//            myObject.loadBlockchain();
+//            //Sincronizar a blockchain
+//            myObject.syncBlockchain();
 //        } catch (Exception ex) {
-//            displayException("Start Server", ex);
+//            displayException("Connect to", ex);
 //        }
-    }//GEN-LAST:event_btStartServerActionPerformed
-
-    private void btConnectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btConnectActionPerformed
-        try {
-            remoteObject = (IRemoteNode) RMI.getRemote(
-                    txtConnectAddress.getText(),
-                    Integer.valueOf(txtConnectPort.getText()),
-                    RemoteNode.NAME);
-            myObject.addNode(remoteObject);
-            updateList();
-            displayMessage("Connect to", "Conexão efectuada com sucesso.");
+try {
+            int port = Integer.parseInt(txtServerPort.getText());
+            myObject = new RemoteNode(port, this, bc);
+            RMI.startRemoteObject(myObject, port, RemoteNode.NAME);
+            AddressReceiver receiver = new AddressReceiver(myObject, this, txtServerAddress.getText());
+            receiver.start();
+            displayMessage("Start Server", "Objecto remoto disponível");
             //Faz load da blockchain guardada
             myObject.loadBlockchain();
             //Sincronizar a blockchain
             myObject.syncBlockchain();
+            AddressAnouncer anouncer = new AddressAnouncer(txtServerAddress.getText());
+            anouncer.start();
+            startClientListener(10020);
+            //updateList();
         } catch (Exception ex) {
-            displayException("Connect to", ex);
+            displayException("Start Server", ex);
         }
-    }//GEN-LAST:event_btConnectActionPerformed
+    }//GEN-LAST:event_btStartServerActionPerformed
 
-    private void txtConnectAddressActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtConnectAddressActionPerformed
+    private void txtServerAddressActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtServerAddressActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_txtConnectAddressActionPerformed
+    }//GEN-LAST:event_txtServerAddressActionPerformed
 
     private void btSaveBCActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btSaveBCActionPerformed
         try {
@@ -551,7 +607,6 @@ public class ServiceGUI extends javax.swing.JFrame implements NonceFoundListener
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btAddBlock;
-    private javax.swing.JButton btConnect;
     private javax.swing.JButton btDisconnect;
     private javax.swing.JButton btGetBlockchain;
     private javax.swing.JButton btSaveBC;
@@ -576,8 +631,6 @@ public class ServiceGUI extends javax.swing.JFrame implements NonceFoundListener
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JList<String> listNodes;
     private javax.swing.JTextPane txtBlockchain;
-    private javax.swing.JTextField txtConnectAddress;
-    private javax.swing.JTextField txtConnectPort;
     private javax.swing.JTextField txtDesc;
     private javax.swing.JTextArea txtDisplay;
     private javax.swing.JTextField txtImei;
@@ -589,6 +642,7 @@ public class ServiceGUI extends javax.swing.JFrame implements NonceFoundListener
     private javax.swing.JTextField txtPais;
     private javax.swing.JTextField txtRede;
     private javax.swing.JTextField txtRep;
+    private javax.swing.JTextField txtServerAddress;
     private javax.swing.JTextField txtServerPort;
     // End of variables declaration//GEN-END:variables
 
@@ -625,8 +679,8 @@ public class ServiceGUI extends javax.swing.JFrame implements NonceFoundListener
             displayException("On Nonce Found", ex);
         }
     }
-    
-    public void setWorking(boolean state){
+
+    public void setWorking(boolean state) {
         txtMinAnim.setVisible(state);
     }
 

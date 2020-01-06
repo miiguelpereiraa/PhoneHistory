@@ -8,6 +8,7 @@ package SD;
 import Blockchain.Block;
 import Blockchain.BlockChain;
 import Timer.TimeServer;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
@@ -46,11 +47,6 @@ public class RemoteNode extends UnicastRemoteObject implements IRemoteNode {
         this.name = InetAddress.getLocalHost().getHostName();
         this.bc = bc;
         miner = new DistributedMiner();
-        //Temporário
-//        bc.addPhone("0", "Primeiro Telefone", "Apple", "iPhone", "Portugal", "Vodafone", "Venda", "Inteiro");
-//        bc.addPhone("1", "Segundo Telefone", "Samsung", "S10", "Portugal", "Desbloqueado", "Venda", "Inteiro");
-//        bc.addPhone("2", "Terceiro Telefone", "Huawei", "P10", "Espanha", "MEO", "Venda", "Peças");
-//        bc.addPhone("3", "Quarto Telefone", "Apple", "iPhone", "Portugal", "Vodafone", "Venda", "Inteiro");
     }
 
     @Override
@@ -61,7 +57,7 @@ public class RemoteNode extends UnicastRemoteObject implements IRemoteNode {
     @Override
     public void addNode(IRemoteNode node) throws RemoteException {
         nodes.add(node);
-        gui.displayMessage("Add node", "node" + node.getName());
+        //gui.displayMessage("Add node", "node" + node.getName());
     }
     
     @Override
@@ -103,6 +99,11 @@ public class RemoteNode extends UnicastRemoteObject implements IRemoteNode {
     @Override
     public Block getLastBlock() throws RemoteException {
         return bc.getLastBlock();
+    }
+    
+    @Override
+    public String getByImei(String imei) throws RemoteException{
+        return bc.getByImei(imei);
     }
     
     @Override
@@ -205,10 +206,13 @@ public class RemoteNode extends UnicastRemoteObject implements IRemoteNode {
     @Override
     public void loadBlockchain() throws RemoteException {
          try {
-             FileInputStream fIS = new FileInputStream("bc");
-             ObjectInputStream objIS = new ObjectInputStream(fIS);
-             bc = (BlockChain)objIS.readObject();
-             objIS.close();
+             File file = new File("bc");
+             if(file.exists()){
+                FileInputStream fIS = new FileInputStream(file);
+                ObjectInputStream objIS = new ObjectInputStream(fIS);
+                bc = (BlockChain)objIS.readObject();
+                objIS.close();
+             }
         } catch (Exception ex) {
             gui.displayException("Carregar Blockchain", ex);
         } 
