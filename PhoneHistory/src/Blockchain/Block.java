@@ -11,8 +11,8 @@ import java.util.Base64;
  * and open the template in the editor.
  */
 public class Block implements Serializable {
-    
-     private static final long SerialVersionUID = 201912112;
+
+    private static final long SerialVersionUID = 201912112;
 
     protected String previous;
 
@@ -41,6 +41,7 @@ public class Block implements Serializable {
         }
         this.fact = data;
         this.size = 2;
+        this.hash = "";
     }
 
     /**
@@ -60,8 +61,8 @@ public class Block implements Serializable {
     public String getFact() {
         return fact;
     }
-    
-    public String getImei(){
+
+    public String getImei() {
         return fact.split("#")[0];
     }
 
@@ -72,6 +73,15 @@ public class Block implements Serializable {
      */
     public void setHash(String hash) {
         this.hash = hash;
+    }
+
+    /**
+     * Obtém a hash do bloco
+     *
+     * @return String da hash do bloco
+     */
+    public String getHash() {
+        return hash;
     }
 
     /**
@@ -108,7 +118,7 @@ public class Block implements Serializable {
     public void setTimestamp(long timestamp) {
         this.timestamp = timestamp;
     }
-    
+
     public String getSignature() {
         return signature;
     }
@@ -116,8 +126,7 @@ public class Block implements Serializable {
     public void setSignature(String signature) {
         this.signature = signature;
     }
-    
-    
+
     //VER ESTE MÉTODO
     public String calcHash() throws NoSuchAlgorithmException {
         MessageDigest hasher = MessageDigest.getInstance("SHA-256");

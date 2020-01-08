@@ -29,7 +29,7 @@ public class Sign {
     }
 
     public static byte[] signature(byte[] data, PrivateKey key) throws Exception {
-        Signature sig = Signature.getInstance(algorithm);
+        Signature sig = Signature.getInstance(algorithm,"BC");
         //Inicia a assinatura
         sig.initSign(key);
         //Assina os dados

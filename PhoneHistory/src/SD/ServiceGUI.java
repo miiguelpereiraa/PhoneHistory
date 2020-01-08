@@ -67,6 +67,8 @@ public class ServiceGUI extends javax.swing.JFrame implements NonceFoundListener
                         param[10]);
                 myObject.sign(p, user, hashPass);
                 myObject.mine(p);
+//                while(((Block)p).getHash().equals("")){
+//                }
                 return "Informação registada";
             case "PESQUISAR":
                 String result = myObject.getByImei(param[1]);

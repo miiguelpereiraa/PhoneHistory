@@ -101,12 +101,10 @@ public class BlockChain implements Serializable {
     public String getByImei(String imei) {
         ArrayList<Block> aux = new ArrayList<>();
         String result = new String();
-        int pos = 0;
-        for (int i = 0; i < chain.size(); i++) {
-            if (chain.get(i).getImei().equals(imei)) {
-                if(!aux.contains(chain.get(i)))
-                    aux.add(chain.get(i));
-            }
+        for (Block block : chain) {
+            if(block.getImei().equals(imei))
+                if(!aux.contains(block))
+                    aux.add(block);
         }
         for (Block block : aux) {
             result.concat(block.getFact() + ";");

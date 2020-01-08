@@ -282,23 +282,32 @@ public class RemoteNode extends UnicastRemoteObject implements IRemoteNode {
 
     @Override
     public void sign(Block b, String user, String hPass) throws RemoteException {
-        try {
-            //Carrega o ficheiro da chave privada encriptada
-            byte[] privateKey = Files.readAllBytes(Paths.get(user+".priv"));
-            //Desencripta a chave privada
-            byte[] decrypted = PBE.decrypt(privateKey, hPass);
-            //Obtém a chave privada
-            Key privKey = Asimetric.getPrivateKey(decrypted);
-            //Converte o fact do bloco para array de bytes
-            byte[] data = b.getFact().getBytes();
-            //Assina os dados com a chave privada
-            Sign.listAlgorithms();
-            byte[] sign = Sign.signature(data, (PrivateKey)privKey);
-            //Atribui a assinatura ao bloco
-            b.setSignature(Base64.getEncoder().encodeToString(sign));
-        } catch (Exception ex) {
-            Logger.getLogger(RemoteNode.class.getName()).log(Level.SEVERE, null, ex);
+        if (Files.exists(Paths.get(user + ".pub")) && Files.exists(Paths.get(user + ".priv"))) {
+            try {
+                //Carrega o ficheiro da chave privada encriptada
+                byte[] privateKey = Files.readAllBytes(Paths.get(user + ".priv"));
+                //Desencripta a chave privada
+                byte[] decrypted = PBE.decrypt(privateKey, hPass);
+                //Obtém a chave privada
+                PrivateKey privKey = Asimetric.getPrivateKey(decrypted);
+                //Converte o fact do bloco para array de bytes
+                byte[] data = b.getFact().getBytes();
+                //Assina os dados com a chave privada
+                byte[] sign = Sign.signature(data, privKey);
+                //Atribui a assinatura ao bloco
+                b.setSignature(Base64.getEncoder().encodeToString(sign));
+            } catch (Exception ex) {
+                gui.displayException("Sign", ex);
+            }
+        }else{
+            //Solicitar aos restantes nodes da rede se possuem a chave necessária para a assinatura
+            for (IRemoteNode node : nodes) {
+                    if (node.verifyExistingUser(user, hPass)) {
+                        node.sign(b, user, hPass);
+                    }
+                }
         }
+
     }
 
 }

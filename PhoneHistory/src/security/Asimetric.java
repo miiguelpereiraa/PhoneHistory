@@ -13,6 +13,7 @@ import java.security.Key;
 import java.security.KeyFactory;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
+import java.security.PrivateKey;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import javax.crypto.Cipher;
@@ -129,10 +130,10 @@ public class Asimetric {
      * gera uma chave privada atraves de array de bytes
      *
      * @param pubData dados da chave privada
-     * @return chave publica
+     * @return chave privada
      * @throws Exception
      */
-    public static Key getPrivateKey(byte[] privData) throws Exception {
+    public static PrivateKey getPrivateKey(byte[] privData) throws Exception {
         //especificações da chave privada PKCS8
         PKCS8EncodedKeySpec privSpec = new PKCS8EncodedKeySpec(privData);
         //objecto para grerar a chave RSA
