@@ -21,12 +21,9 @@ public interface IRemoteNode extends Remote {
     public String getName() throws RemoteException;
     
     public void addNode(IRemoteNode node) throws RemoteException;
-    
     public void removeNode(IRemoteNode node) throws RemoteException;
-
     public List<IRemoteNode> getNodes() throws RemoteException;
 
-    //void addBlock(Phone p) throws RemoteException;
     public void addBlock(Block b) throws RemoteException;
 
     public BlockChain getBlockchain() throws RemoteException;
@@ -39,6 +36,10 @@ public interface IRemoteNode extends Remote {
     public void loadBlockchain() throws RemoteException;
 
     public void mine(Block b) throws RemoteException;
-
+    public void sign(Block b, String user, String hPass) throws RemoteException;
     public void stopMining(Block b) throws RemoteException;
+    
+    public boolean register(String hUser, String hPass) throws RemoteException;
+    public boolean login(String hUser, String hPass) throws RemoteException;
+    public boolean verifyExistingUser(String hUser, String hPass) throws RemoteException;
 }

@@ -14,12 +14,23 @@ import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.InetAddress;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import java.security.Key;
+import java.security.KeyPair;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArraySet;
 import miners.DistributedMiner;
+import Security.Asimetric;
+import Security.PBE;
+import java.security.PrivateKey;
+import java.util.Base64;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import security.Sign;
 
 /**
  *
@@ -33,7 +44,7 @@ public class RemoteNode extends UnicastRemoteObject implements IRemoteNode {
     CopyOnWriteArraySet<IRemoteNode> nodes;
     BlockChain bc;
     DistributedMiner miner;
-    
+
     TimeServer tm;
 
     int port;
@@ -59,13 +70,12 @@ public class RemoteNode extends UnicastRemoteObject implements IRemoteNode {
         nodes.add(node);
         //gui.displayMessage("Add node", "node" + node.getName());
     }
-    
+
     @Override
     public void removeNode(IRemoteNode node) throws RemoteException {
         nodes.remove(node);
         gui.displayMessage("Remove node", "node" + node.getName());
     }
-
 
     @Override
     public List<IRemoteNode> getNodes() throws RemoteException {
@@ -90,43 +100,44 @@ public class RemoteNode extends UnicastRemoteObject implements IRemoteNode {
     public BlockChain getBlockchain() throws RemoteException {
         return bc;
     }
-    
+
     @Override
     public ArrayList<Block> getBlocksFrom(Block b) throws RemoteException {
         return bc.getBlocksFrom(b);
     }
-    
+
     @Override
     public Block getLastBlock() throws RemoteException {
         return bc.getLastBlock();
     }
-    
+
     @Override
-    public String getByImei(String imei) throws RemoteException{
+    public String getByImei(String imei) throws RemoteException {
         return bc.getByImei(imei);
     }
-    
+
     @Override
     public void syncBlockchain() throws RemoteException {
         long timestamp = 0;
         String nodeName = "";
         //Verifica qual o node que possui a blockchain com o último bloco mais recente;
         for (IRemoteNode node : nodes) {
-            if(node.getBlockchain().size() != 0){
+            if (node.getBlockchain().size() != 0) {
                 if (node.getLastBlock().getTimestamp() > timestamp) {
                     timestamp = node.getLastBlock().getTimestamp();
                     nodeName = node.getName();
                 }
             }
-            
+
         }
         //Sincronizar a blockchain
         for (IRemoteNode node : nodes) {
-            if(node.getName().equals(nodeName)){
-                if(bc.isEmpty())
+            if (node.getName().equals(nodeName)) {
+                if (bc.isEmpty()) {
                     bc = node.getBlockchain();
-                else
+                } else {
                     bc.addBlockList(node.getBlocksFrom(bc.getLastBlock()));
+                }
             }
         }
     }
@@ -168,11 +179,6 @@ public class RemoteNode extends UnicastRemoteObject implements IRemoteNode {
         if (bc.contains(b)) {
             return;
         }
-//        try {
-//            b.setTimestamp(getTimeTCP("192.168.1.180"));
-//        } catch (IOException ex) {
-//            Logger.getLogger(RemoteNode.class.getName()).log(Level.SEVERE, null, ex);
-//        }
 
         bc.addBlock(b);
 
@@ -183,14 +189,6 @@ public class RemoteNode extends UnicastRemoteObject implements IRemoteNode {
 
     }
 
-//    public static long getTimeTCP(String host) throws IOException{
-//        Socket timeServer = new Socket(host, 37);
-//        DataInputStream input = new DataInputStream(timeServer.getInputStream());
-//        long time = (input.readInt() & 0xffffffffL);//convert to unsigned int
-//        timeServer.close();
-//        return (time - 2208988800L) * 1000L;
-//    }
-
     @Override
     public void saveBlockchain() throws RemoteException {
         try {
@@ -198,26 +196,109 @@ public class RemoteNode extends UnicastRemoteObject implements IRemoteNode {
             ObjectOutputStream objOS = new ObjectOutputStream(fOS);
             objOS.writeObject(bc);
             objOS.close();
-        } catch (Exception ex ) {
+        } catch (Exception ex) {
             gui.displayException("Guardar Blockchain", ex);
-        } 
+        }
     }
 
     @Override
     public void loadBlockchain() throws RemoteException {
-         try {
-             File file = new File("bc");
-             if(file.exists()){
+        try {
+            File file = new File("bc");
+            if (file.exists()) {
                 FileInputStream fIS = new FileInputStream(file);
                 ObjectInputStream objIS = new ObjectInputStream(fIS);
-                bc = (BlockChain)objIS.readObject();
+                bc = (BlockChain) objIS.readObject();
                 objIS.close();
-             }
+            }
         } catch (Exception ex) {
             gui.displayException("Carregar Blockchain", ex);
-        } 
+        }
     }
 
-    
-                
+    @Override
+    public boolean register(String hUser, String hPass) throws RemoteException {
+        try {
+            //Gerar o par de chaves publica e privada
+            KeyPair kp = Asimetric.generateKeyPair(2048);
+            //Guardar a chave publica
+            Asimetric.saveKey(kp.getPublic(), hUser + ".pub");
+            //Encriptar a chave privada com a password introduzida pelo utilizador
+            byte[] secret = PBE.encrypt(kp.getPrivate().getEncoded(), hPass);
+            //Guardar a chave privada encriptada com a password
+            Files.write(Paths.get(hUser + ".priv"), secret);
+            return true;
+        } catch (Exception ex) {
+            gui.displayException("Registo", ex);
+            return false;
+        }
+    }
+
+    @Override
+    public boolean login(String hUser, String hPass) throws RemoteException {
+        try {
+            //Verifica se o utilizador está registado            
+            if (Files.exists(Paths.get(hUser + ".pub")) && Files.exists(Paths.get(hUser + ".priv"))) {
+                //Carrega o ficheiro da chave privada encriptada
+                byte[] privateKey = Files.readAllBytes(Paths.get(hUser + ".priv"));
+                //Desencripta a chave privada
+                byte[] decrypted = PBE.decrypt(privateKey, hPass);
+                //Se a chave privada foi desencriptada com sucesso, a password fornecida está correcta
+                return true;
+            } else {
+                //Pergunta aos restantes nodos da rede se o utilizador está registado
+                for (IRemoteNode node : nodes) {
+                    if (node.verifyExistingUser(hUser, hPass)) {
+                        return true;
+                    }
+                }
+                //Utilizador não está registado ou as credenciais de acesso estão erradas
+                throw new RuntimeException("Caso esteja registado, p.f. verifique as suas credenciais, caso contrário, p.f. efectue o registo.");
+            }
+        } catch (Exception ex) {
+            gui.displayException("Login", ex);
+            return false;
+        }
+    }
+
+    @Override
+    public boolean verifyExistingUser(String hUser, String hPass) throws RemoteException {
+        try {
+            if (Files.exists(Paths.get(hUser + ".pub")) && Files.exists(Paths.get(hUser + ".priv"))) {
+                //Carrega o ficheiro da chave privada encriptada
+                byte[] privateKey = Files.readAllBytes(Paths.get(hUser + ".priv"));
+                //Desencripta a chave privada
+                byte[] decrypted = PBE.decrypt(privateKey, hPass);
+                //Se a chave privada foi desencriptada com sucesso, a password fornecida está correcta
+                return true;
+            } else {
+                return false;
+            }
+        } catch (Exception ex) {
+            gui.displayException("Login", ex);
+            return false;
+        }
+    }
+
+    @Override
+    public void sign(Block b, String user, String hPass) throws RemoteException {
+        try {
+            //Carrega o ficheiro da chave privada encriptada
+            byte[] privateKey = Files.readAllBytes(Paths.get(user+".priv"));
+            //Desencripta a chave privada
+            byte[] decrypted = PBE.decrypt(privateKey, hPass);
+            //Obtém a chave privada
+            Key privKey = Asimetric.getPrivateKey(decrypted);
+            //Converte o fact do bloco para array de bytes
+            byte[] data = b.getFact().getBytes();
+            //Assina os dados com a chave privada
+            Sign.listAlgorithms();
+            byte[] sign = Sign.signature(data, (PrivateKey)privKey);
+            //Atribui a assinatura ao bloco
+            b.setSignature(Base64.getEncoder().encodeToString(sign));
+        } catch (Exception ex) {
+            Logger.getLogger(RemoteNode.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
 }

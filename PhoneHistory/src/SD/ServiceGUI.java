@@ -10,12 +10,10 @@ import Blockchain.BlockChain;
 import Blockchain.Phone;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
-import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.rmi.RemoteException;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
 import java.util.Base64;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -35,30 +33,48 @@ public class ServiceGUI extends javax.swing.JFrame implements NonceFoundListener
     BlockChain bc;
 
     ServerSocket clientListener;
-    
-    public String doService(String...param) throws NoSuchAlgorithmException, InterruptedException, RemoteException{
+
+    public String doService(String... param) throws NoSuchAlgorithmException, InterruptedException, RemoteException {
         String cmd = param[0].toUpperCase();
-        switch(cmd){
+        switch (cmd) {
             case "LOGIN":
-                return param[1] + "ACCEPTED";
+                String userLog = param[1];
+                String hPassLog = param[2];
+                boolean logSucess = myObject.login(userLog, hPassLog);
+                if(logSucess)
+                    return "Login efectuado com sucesso";
+                else
+                    return "Login efectuado sem sucesso. P.f. verifique as suas credenciais ou registe-se na aplicação.";
+            case "REGISTO":
+                String userReg = param[1];
+                String hPassReg = param[2];
+                boolean regSucess = myObject.register(userReg, hPassReg);
+                if(regSucess)
+                    return "Registo efectuado com sucesso";
+                else
+                    return "Registo efectuado sem sucesso. P.f. tente novamente";
             case "ADDREG":
+                String user = param[1];
+                String hashPass = param[2];
                 Phone p = myObject.bc.getNewBlock(
-                    param[1],
-                    param[2],
-                    param[3],
-                    param[4],
-                    param[5],
-                    param[6],
-                    param[7],
-                    param[8]);
-                    myObject.mine(p);
-                    return "Informação registada";
+                        param[3],
+                        param[4],
+                        param[5],
+                        param[6],
+                        param[7],
+                        param[8],
+                        param[9],
+                        param[10]);
+                myObject.sign(p, user, hashPass);
+                myObject.mine(p);
+                return "Informação registada";
             case "PESQUISAR":
                 String result = myObject.getByImei(param[1]);
-                if(result != "")
+                if (result != "") {
                     return result;
-                else
+                } else {
                     return null;
+                }
             default:
                 return "UNKNOWN COMMAND:" + cmd;
         }
@@ -67,41 +83,37 @@ public class ServiceGUI extends javax.swing.JFrame implements NonceFoundListener
     public void startClientListener(int port) {
         new Thread(
                 () -> {
-            try {
-                //código executado pela Thread
-                //Ligar o listener
-                clientListener = new ServerSocket(port);
-                while (true) {                    
-                    //Escutar os clientes
-                    Socket client = clientListener.accept();
-                    //Extrair o endereço do cliente
-                    String txtClient = client.getInetAddress() + ":" + client.getPort();
-                    //Informar a interface
-                    //displayMessage("Client accepted", txtClient);
-                    //Abrir as streams IO
-                    DataInputStream in = new DataInputStream(client.getInputStream());
-                    DataOutputStream out = new DataOutputStream(client.getOutputStream());
-                    //Ler a a mensagem
-                    //String msg = in.readUTF();
-                    byte[] b = Base64.getDecoder().decode(in.readUTF());
-                    String msg = new String(b);
-                    //Executar o serviço
-                    msg = doService(msg.split(" "));
-                    //Devolver a resposta
-                    out.writeUTF(msg);
-                    //Fechar as streams
-                    in.close();
-                    out.close();
-                    client.close();
-                    //displayMessage("Service Done", txtClient);
-                }
-            } catch (IOException ex) {
-                displayException("Cliente listener", ex);
-            } catch (NoSuchAlgorithmException ex) {
-                Logger.getLogger(ServiceGUI.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (InterruptedException ex) {
-                Logger.getLogger(ServiceGUI.class.getName()).log(Level.SEVERE, null, ex);
-            }
+                    try {
+                        //código executado pela Thread
+                        //Ligar o listener
+                        clientListener = new ServerSocket(port);
+                        while (true) {
+                            //Escutar os clientes
+                            Socket client = clientListener.accept();
+                            //Extrair o endereço do cliente
+                            String txtClient = client.getInetAddress() + ":" + client.getPort();
+                            //Informar a interface
+                            //displayMessage("Client accepted", txtClient);
+                            //Abrir as streams IO
+                            DataInputStream in = new DataInputStream(client.getInputStream());
+                            DataOutputStream out = new DataOutputStream(client.getOutputStream());
+                            //Ler a a mensagem
+                            //String msg = in.readUTF();
+                            byte[] b = Base64.getDecoder().decode(in.readUTF());
+                            String msg = new String(b);
+                            //Executar o serviço
+                            msg = doService(msg.split(" "));
+                            //Devolver a resposta
+                            out.writeUTF(msg);
+                            //Fechar as streams
+                            in.close();
+                            out.close();
+                            client.close();
+                            //displayMessage("Service Done", txtClient);
+                        }
+                    } catch (Exception ex) {
+                        displayException("Cliente listener", ex);
+                    }
                 }).start();
     }
 
@@ -534,7 +546,7 @@ public class ServiceGUI extends javax.swing.JFrame implements NonceFoundListener
 //        } catch (Exception ex) {
 //            displayException("Connect to", ex);
 //        }
-try {
+        try {
             int port = Integer.parseInt(txtServerPort.getText());
             myObject = new RemoteNode(port, this, bc);
             RMI.startRemoteObject(myObject, port, RemoteNode.NAME);

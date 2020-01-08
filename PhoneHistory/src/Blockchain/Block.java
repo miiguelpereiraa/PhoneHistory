@@ -19,6 +19,7 @@ public class Block implements Serializable {
     protected String fact;
 
     protected long timestamp;
+    protected String signature;
 
     protected String hash;
     protected long nonce;
@@ -39,7 +40,7 @@ public class Block implements Serializable {
             this.previous = previous;
         }
         this.fact = data;
-        this.size = 4;
+        this.size = 2;
     }
 
     /**
@@ -107,7 +108,14 @@ public class Block implements Serializable {
     public void setTimestamp(long timestamp) {
         this.timestamp = timestamp;
     }
+    
+    public String getSignature() {
+        return signature;
+    }
 
+    public void setSignature(String signature) {
+        this.signature = signature;
+    }
     
     
     //VER ESTE MÉTODO

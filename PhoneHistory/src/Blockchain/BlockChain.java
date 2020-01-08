@@ -102,15 +102,15 @@ public class BlockChain implements Serializable {
         ArrayList<Block> aux = new ArrayList<>();
         String result = new String();
         int pos = 0;
-        for (int i = 0; i < chain.size() - 1; i++) {
+        for (int i = 0; i < chain.size(); i++) {
             if (chain.get(i).getImei().equals(imei)) {
-                //PROBLEMA, SÓ ESTÁ A DEVOLVER 1 REGISTO, SE HOUVER MAIS QUE 1 PARA O MESMO IMEI
                 if(!aux.contains(chain.get(i)))
                     aux.add(chain.get(i));
             }
         }
         for (Block block : aux) {
-            result += block.getFact() + ";";
+            result.concat(block.getFact() + ";");
+            //result += block.getFact() + ";";
         }
         //Retirar o ultimo ;
         if(result != "")
