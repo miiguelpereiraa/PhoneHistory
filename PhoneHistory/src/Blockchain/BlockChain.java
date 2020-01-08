@@ -18,11 +18,7 @@ public class BlockChain implements Serializable {
     //protected CopyOnWriteArrayList<Phone> chain = new CopyOnWriteArrayList<>();
     protected CopyOnWriteArrayList<Block> chain = new CopyOnWriteArrayList<>();
 
-//    public void add(String data) throws NoSuchAlgorithmException, InterruptedException{
-//        String prev = getLastBlock();
-//        Block block = new Block(prev, data);
-//        chain.add(block);
-//    }
+
     /**
      * Adiciona um novo bloco à blockchain, dado um id e uma descrição
      *
@@ -49,7 +45,6 @@ public class BlockChain implements Serializable {
     }
 
     public void addBlock(Block b) {
-        //Falta verificar se o bloco é válido e se já existe na blockchain
         if (!chain.contains(b)) {
             chain.add(b);
         }
@@ -97,18 +92,21 @@ public class BlockChain implements Serializable {
         }
         return aux;
     }
-
-    public String getByImei(String imei) {
+    
+    public ArrayList<Block> getBlocksByImei(String imei){
         ArrayList<Block> aux = new ArrayList<>();
-        String result = new String();
         for (Block block : chain) {
             if(block.getImei().equals(imei))
                 if(!aux.contains(block))
                     aux.add(block);
         }
-        for (Block block : aux) {
-            result.concat(block.getFact() + ";");
-            //result += block.getFact() + ";";
+        return aux;
+    }
+    
+    public String getFactByImei(ArrayList<Block> b){
+        String result = new String();
+        for (Block block : b) {
+            result += block.getFact() + ";";
         }
         //Retirar o ultimo ;
         if(result != "")

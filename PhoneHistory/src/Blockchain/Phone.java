@@ -5,8 +5,6 @@
  */
 package Blockchain;
 
-import Blockchain.Block;
-import java.io.Serializable;
 import java.security.NoSuchAlgorithmException;
 
 
@@ -38,7 +36,7 @@ public class Phone extends Block{
      * @throws InterruptedException 
      */
     public Phone(String previous, String imei, String desc, String marca, String modelo, String pais, String rede, String reparacao, String material) throws NoSuchAlgorithmException, InterruptedException {
-        super(previous, imei+"#"+desc+"#"+marca+"#"+modelo+"#"+pais+"#"+rede+"#"+reparacao+"#"+material);
+        super(previous, imei+"#"+marca+"#"+modelo+"#"+pais+"#"+rede+"#"+reparacao+"#"+material+"#"+desc);
         this.imei = imei;
         this.desc = desc;
         this.marca= marca; 

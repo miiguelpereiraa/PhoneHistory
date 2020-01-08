@@ -18,7 +18,6 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
-import java.security.Key;
 import java.security.KeyPair;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,9 +26,8 @@ import miners.DistributedMiner;
 import Security.Asimetric;
 import Security.PBE;
 import java.security.PrivateKey;
+import java.security.PublicKey;
 import java.util.Base64;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import security.Sign;
 
 /**
@@ -112,8 +110,12 @@ public class RemoteNode extends UnicastRemoteObject implements IRemoteNode {
     }
 
     @Override
-    public String getByImei(String imei) throws RemoteException {
-        return bc.getByImei(imei);
+    public String getByImei(String imei, String user) throws RemoteException {
+        ArrayList<Block> aux = bc.getBlocksByImei(imei);
+        for (Block block : aux) {
+            verifySign(block, user);
+        }
+        return bc.getFactByImei(aux);
     }
 
     @Override
@@ -248,7 +250,7 @@ public class RemoteNode extends UnicastRemoteObject implements IRemoteNode {
             } else {
                 //Pergunta aos restantes nodos da rede se o utilizador está registado
                 for (IRemoteNode node : nodes) {
-                    if (node.verifyExistingUser(hUser, hPass)) {
+                    if (node.verifyExistingUser(hUser)) {
                         return true;
                     }
                 }
@@ -262,14 +264,9 @@ public class RemoteNode extends UnicastRemoteObject implements IRemoteNode {
     }
 
     @Override
-    public boolean verifyExistingUser(String hUser, String hPass) throws RemoteException {
+    public boolean verifyExistingUser(String hUser) throws RemoteException {
         try {
             if (Files.exists(Paths.get(hUser + ".pub")) && Files.exists(Paths.get(hUser + ".priv"))) {
-                //Carrega o ficheiro da chave privada encriptada
-                byte[] privateKey = Files.readAllBytes(Paths.get(hUser + ".priv"));
-                //Desencripta a chave privada
-                byte[] decrypted = PBE.decrypt(privateKey, hPass);
-                //Se a chave privada foi desencriptada com sucesso, a password fornecida está correcta
                 return true;
             } else {
                 return false;
@@ -302,12 +299,39 @@ public class RemoteNode extends UnicastRemoteObject implements IRemoteNode {
         }else{
             //Solicitar aos restantes nodes da rede se possuem a chave necessária para a assinatura
             for (IRemoteNode node : nodes) {
-                    if (node.verifyExistingUser(user, hPass)) {
+                    if (node.verifyExistingUser(user)) {
                         node.sign(b, user, hPass);
                     }
                 }
         }
 
+    }
+
+    @Override
+    public void verifySign(Block b, String user) throws RemoteException {
+        if (Files.exists(Paths.get(user + ".pub")) && Files.exists(Paths.get(user + ".priv"))) {
+            try {
+                //Obtém a chave pública
+                PublicKey pubKey = Asimetric.loadPublicKey(user+".pub");
+                //Converte o fact do bloco para array de bytes
+                byte[] data = b.getFact().getBytes();
+                //Assina os dados com a chave privada
+                byte[] oldSign = Base64.getDecoder().decode(b.getSignature());
+                //Verificar a assinatura
+                boolean passed = Sign.verify(data, oldSign, pubKey);
+                if(!passed)
+                    throw new Exception("Assinatura inválida");
+            } catch (Exception ex) {
+                gui.displayException("Sign", ex);
+            }
+        }else{
+            //Solicitar aos restantes nodes da rede se possuem a chave necessária para a assinatura
+            for (IRemoteNode node : nodes) {
+                    if (node.verifyExistingUser(user)) {
+                        node.verifySign(b, user);
+                    }
+                }
+        }
     }
 
 }

@@ -69,15 +69,14 @@ public class ServiceGUI extends javax.swing.JFrame implements NonceFoundListener
                         param[10]);
                 myObject.sign(p, user, hashPass);
                 myObject.mine(p);
-//                while(((Block)p).getHash().equals("")){
-//                }
                 return "Informação registada";
             case "PESQUISAR":
-                String result = myObject.getByImei(param[1]);
+                String userP = param[1];
+                String result = myObject.getByImei(param[2], userP);
                 if (result != "") {
                     return result;
                 } else {
-                    return null;
+                    return "";
                 }
             default:
                 return "UNKNOWN COMMAND:" + cmd;
@@ -145,7 +144,6 @@ public class ServiceGUI extends javax.swing.JFrame implements NonceFoundListener
         txtServerAddress = new javax.swing.JTextField();
         txtServerPort = new javax.swing.JTextField();
         btStartServer = new javax.swing.JButton();
-        btDisconnect = new javax.swing.JButton();
         jPanel4 = new javax.swing.JPanel();
         jPanel5 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -200,13 +198,6 @@ public class ServiceGUI extends javax.swing.JFrame implements NonceFoundListener
             }
         });
 
-        btDisconnect.setText("Disconnect");
-        btDisconnect.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btDisconnectActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
@@ -216,8 +207,7 @@ public class ServiceGUI extends javax.swing.JFrame implements NonceFoundListener
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(txtServerAddress, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE)
                     .addComponent(txtServerPort, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(btStartServer, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btDisconnect, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(btStartServer, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(21, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
@@ -229,9 +219,7 @@ public class ServiceGUI extends javax.swing.JFrame implements NonceFoundListener
                 .addComponent(txtServerPort)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btStartServer, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btDisconnect)
-                .addContainerGap())
+                .addGap(45, 45, 45))
         );
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
@@ -270,6 +258,7 @@ public class ServiceGUI extends javax.swing.JFrame implements NonceFoundListener
             .addComponent(jScrollPane2)
         );
 
+        listNodes.setBorder(javax.swing.BorderFactory.createTitledBorder("Node List"));
         listNodes.setEnabled(false);
         jScrollPane3.setViewportView(listNodes);
 
@@ -312,7 +301,6 @@ public class ServiceGUI extends javax.swing.JFrame implements NonceFoundListener
 
         jLabel1.setText("IMEI:");
 
-        txtImei.setText("Teste");
         txtImei.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txtImeiActionPerformed(evt);
@@ -326,7 +314,6 @@ public class ServiceGUI extends javax.swing.JFrame implements NonceFoundListener
             }
         });
 
-        txtMarca.setText("Teste");
         txtMarca.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txtMarcaActionPerformed(evt);
@@ -335,11 +322,8 @@ public class ServiceGUI extends javax.swing.JFrame implements NonceFoundListener
 
         jLabel7.setText("Marca:");
 
-        txtModelo.setText("Teste");
-
         jLabel8.setText("Modelo:");
 
-        txtRede.setText("Teste");
         txtRede.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txtRedeActionPerformed(evt);
@@ -348,21 +332,19 @@ public class ServiceGUI extends javax.swing.JFrame implements NonceFoundListener
 
         jLabel9.setText("Rede:");
 
-        txtPais.setText("Teste");
+        txtPais.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtPaisActionPerformed(evt);
+            }
+        });
 
         jLabel10.setText("País:");
 
-        txtRep.setText("Teste");
-
         jLabel11.setText("Reparação:");
-
-        txtMat.setText("Teste");
 
         jLabel12.setText("Material:");
 
         jLabel13.setText("Descrição");
-
-        txtDesc.setText("Teste");
 
         jScrollPane4.setViewportView(txtBlockchain);
 
@@ -389,6 +371,7 @@ public class ServiceGUI extends javax.swing.JFrame implements NonceFoundListener
             .addGroup(jPanel9Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(txtMinAnim)
                     .addGroup(jPanel9Layout.createSequentialGroup()
                         .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel9Layout.createSequentialGroup()
@@ -417,9 +400,8 @@ public class ServiceGUI extends javax.swing.JFrame implements NonceFoundListener
                             .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                 .addComponent(btGetBlockchain, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(btAddBlock, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addComponent(btSaveBC)))
-                    .addComponent(txtMinAnim))
-                .addGap(18, 18, 18)
+                            .addComponent(btSaveBC))))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 466, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -579,9 +561,9 @@ public class ServiceGUI extends javax.swing.JFrame implements NonceFoundListener
                 }).start();
     }//GEN-LAST:event_btSaveBCActionPerformed
 
-    private void btDisconnectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btDisconnectActionPerformed
-        // TODO
-    }//GEN-LAST:event_btDisconnectActionPerformed
+    private void txtPaisActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtPaisActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtPaisActionPerformed
 
     /**
      * @param args the command line arguments
@@ -620,7 +602,6 @@ public class ServiceGUI extends javax.swing.JFrame implements NonceFoundListener
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btAddBlock;
-    private javax.swing.JButton btDisconnect;
     private javax.swing.JButton btGetBlockchain;
     private javax.swing.JButton btSaveBC;
     private javax.swing.JButton btStartServer;
@@ -659,6 +640,7 @@ public class ServiceGUI extends javax.swing.JFrame implements NonceFoundListener
     private javax.swing.JTextField txtServerPort;
     // End of variables declaration//GEN-END:variables
 
+    //Display de exceções
     public void displayException(String source, Exception ex) {
         txtLog.setText(
                 source + "\t" + ex.getMessage() + "\n" + txtLog.getText()
@@ -666,12 +648,14 @@ public class ServiceGUI extends javax.swing.JFrame implements NonceFoundListener
         Logger.getLogger(ServiceGUI.class.getName()).log(Level.SEVERE, null, ex);
     }
 
+    //Display de mensagens
     public void displayMessage(String source, String txt) {
         txtDisplay.setText(
                 source + "\t" + txt + "\n" + txtDisplay.getText()
         );
     }
 
+    //Update à lista de nodes
     public void updateList() {
         try {
             DefaultListModel model = new DefaultListModel();
@@ -693,6 +677,7 @@ public class ServiceGUI extends javax.swing.JFrame implements NonceFoundListener
         }
     }
 
+    
     public void setWorking(boolean state) {
         txtMinAnim.setVisible(state);
     }

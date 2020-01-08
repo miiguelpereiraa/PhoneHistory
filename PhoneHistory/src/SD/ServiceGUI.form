@@ -104,7 +104,6 @@
                               <Component id="txtServerAddress" alignment="1" pref="200" max="32767" attributes="0"/>
                               <Component id="txtServerPort" alignment="1" max="32767" attributes="0"/>
                               <Component id="btStartServer" max="32767" attributes="0"/>
-                              <Component id="btDisconnect" max="32767" attributes="0"/>
                           </Group>
                           <EmptySpace pref="21" max="32767" attributes="0"/>
                       </Group>
@@ -119,9 +118,7 @@
                           <Component id="txtServerPort" max="32767" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="btStartServer" min="-2" pref="32" max="-2" attributes="0"/>
-                          <EmptySpace max="-2" attributes="0"/>
-                          <Component id="btDisconnect" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace max="-2" attributes="0"/>
+                          <EmptySpace min="-2" pref="45" max="-2" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -162,14 +159,6 @@
                   </Properties>
                   <Events>
                     <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btStartServerActionPerformed"/>
-                  </Events>
-                </Component>
-                <Component class="javax.swing.JButton" name="btDisconnect">
-                  <Properties>
-                    <Property name="text" type="java.lang.String" value="Disconnect"/>
-                  </Properties>
-                  <Events>
-                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btDisconnectActionPerformed"/>
                   </Events>
                 </Component>
               </SubComponents>
@@ -264,6 +253,11 @@
               <SubComponents>
                 <Component class="javax.swing.JList" name="listNodes">
                   <Properties>
+                    <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+                      <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
+                        <TitledBorder title="Node List"/>
+                      </Border>
+                    </Property>
                     <Property name="model" type="javax.swing.ListModel" editor="org.netbeans.modules.form.editors2.ListModelEditor">
                       <StringArray count="0"/>
                     </Property>
@@ -292,7 +286,8 @@
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Group type="102" attributes="0">
+                          <Component id="txtMinAnim" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Group type="102" alignment="0" attributes="0">
                               <Group type="103" groupAlignment="0" attributes="0">
                                   <Group type="102" alignment="0" attributes="0">
                                       <Group type="103" groupAlignment="0" attributes="0">
@@ -320,18 +315,17 @@
                                   </Group>
                                   <Component id="jLabel13" alignment="0" min="-2" max="-2" attributes="0"/>
                               </Group>
-                              <EmptySpace min="-2" pref="40" max="-2" attributes="0"/>
+                              <EmptySpace min="40" pref="40" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
                                   <Group type="103" groupAlignment="0" max="-2" attributes="0">
                                       <Component id="btGetBlockchain" alignment="0" max="32767" attributes="0"/>
                                       <Component id="btAddBlock" alignment="0" max="32767" attributes="0"/>
                                   </Group>
-                                  <Component id="btSaveBC" min="-2" max="-2" attributes="0"/>
+                                  <Component id="btSaveBC" alignment="0" min="-2" max="-2" attributes="0"/>
                               </Group>
                           </Group>
-                          <Component id="txtMinAnim" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace type="separate" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
                       <Component id="jScrollPane4" min="-2" pref="466" max="-2" attributes="0"/>
                       <EmptySpace max="32767" attributes="0"/>
                   </Group>
@@ -416,9 +410,6 @@
               </Properties>
             </Component>
             <Component class="javax.swing.JTextField" name="txtImei">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="Teste"/>
-              </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txtImeiActionPerformed"/>
               </Events>
@@ -432,9 +423,6 @@
               </Events>
             </Component>
             <Component class="javax.swing.JTextField" name="txtMarca">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="Teste"/>
-              </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txtMarcaActionPerformed"/>
               </Events>
@@ -445,9 +433,6 @@
               </Properties>
             </Component>
             <Component class="javax.swing.JTextField" name="txtModelo">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="Teste"/>
-              </Properties>
             </Component>
             <Component class="javax.swing.JLabel" name="jLabel8">
               <Properties>
@@ -455,9 +440,6 @@
               </Properties>
             </Component>
             <Component class="javax.swing.JTextField" name="txtRede">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="Teste"/>
-              </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txtRedeActionPerformed"/>
               </Events>
@@ -468,9 +450,9 @@
               </Properties>
             </Component>
             <Component class="javax.swing.JTextField" name="txtPais">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="Teste"/>
-              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txtPaisActionPerformed"/>
+              </Events>
             </Component>
             <Component class="javax.swing.JLabel" name="jLabel10">
               <Properties>
@@ -478,9 +460,6 @@
               </Properties>
             </Component>
             <Component class="javax.swing.JTextField" name="txtRep">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="Teste"/>
-              </Properties>
             </Component>
             <Component class="javax.swing.JLabel" name="jLabel11">
               <Properties>
@@ -488,9 +467,6 @@
               </Properties>
             </Component>
             <Component class="javax.swing.JTextField" name="txtMat">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="Teste"/>
-              </Properties>
             </Component>
             <Component class="javax.swing.JLabel" name="jLabel12">
               <Properties>
@@ -503,9 +479,6 @@
               </Properties>
             </Component>
             <Component class="javax.swing.JTextField" name="txtDesc">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="Teste"/>
-              </Properties>
             </Component>
             <Container class="javax.swing.JScrollPane" name="jScrollPane4">
               <AuxValues>

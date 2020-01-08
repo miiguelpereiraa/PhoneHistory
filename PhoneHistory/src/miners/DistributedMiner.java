@@ -48,6 +48,7 @@ public class DistributedMiner {
         return isWorking.get();
     }
     
+    //Obtém o tempo a partir do servidor de tempo
     public static long getTimeTCP(String host) throws IOException{
         Socket timeServer = new Socket(host, 37);
         DataInputStream input = new DataInputStream(timeServer.getInputStream());
@@ -56,6 +57,7 @@ public class DistributedMiner {
         return (time - 2208988800L) * 1000L;
     }
 
+    //Minera
     public void mine(Block blk, NonceFoundListener listener) throws Exception {
         
         MessageDigest hasher = MessageDigest.getInstance("SHA3-256");
@@ -72,11 +74,9 @@ public class DistributedMiner {
 
             if (txtH.startsWith(prefix)) {
                 System.out.println("Encontrei");
-                //nonce = num;
                 blk.setNonce(num);
                 blk.setHash(txtH);
                 blk.setTimestamp(getTimeTCP("192.168.1.122"));
-                //isWorking.set(false);
                 listener.onNonceFound(blk);
             }
         }

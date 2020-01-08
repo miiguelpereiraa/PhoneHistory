@@ -14,6 +14,7 @@ import java.security.KeyFactory;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.PrivateKey;
+import java.security.PublicKey;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import javax.crypto.Cipher;
@@ -88,7 +89,7 @@ public class Asimetric {
         Files.write(Paths.get(fileName), key.getEncoded());
     }
 
-    public static Key loadPublicKey(String file) throws Exception {
+    public static PublicKey loadPublicKey(String file) throws Exception {
         //ler o ficheiro
         byte[] data = Files.readAllBytes(Paths.get(file));
         //especifacção do encoding da chave publica X509
