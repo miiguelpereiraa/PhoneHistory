@@ -41,18 +41,20 @@ public class ServiceGUI extends javax.swing.JFrame implements NonceFoundListener
                 String userLog = param[1];
                 String hPassLog = param[2];
                 boolean logSucess = myObject.login(userLog, hPassLog);
-                if(logSucess)
+                if (logSucess) {
                     return "Login efectuado com sucesso";
-                else
+                } else {
                     return "Login efectuado sem sucesso. P.f. verifique as suas credenciais ou registe-se na aplicação.";
+                }
             case "REGISTO":
                 String userReg = param[1];
                 String hPassReg = param[2];
                 boolean regSucess = myObject.register(userReg, hPassReg);
-                if(regSucess)
+                if (regSucess) {
                     return "Registo efectuado com sucesso";
-                else
+                } else {
                     return "Registo efectuado sem sucesso. P.f. tente novamente";
+                }
             case "ADDREG":
                 String user = param[1];
                 String hashPass = param[2];
@@ -496,23 +498,25 @@ public class ServiceGUI extends javax.swing.JFrame implements NonceFoundListener
     }//GEN-LAST:event_txtImeiActionPerformed
 
     private void btAddBlockActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btAddBlockActionPerformed
-        try {
-            displayMessage("Add Block", "A adicionar o bloco");
-            Phone p = myObject.bc.getNewBlock(
-                    txtImei.getText(),
-                    txtDesc.getText(),
-                    txtMarca.getText(),
-                    txtModelo.getText(),
-                    txtPais.getText(),
-                    txtRede.getText(),
-                    txtRep.getText(),
-                    txtMat.getText());
-            myObject.mine(p);
-            displayMessage("", "Bloco adicionado");
-        } catch (Exception ex) {
-            displayException("Add block", ex);
-        }
-
+        new Thread(
+                () -> {
+                    try {
+                        displayMessage("Add Block", "A adicionar o bloco");
+                        Phone p = myObject.bc.getNewBlock(
+                                txtImei.getText(),
+                                txtDesc.getText(),
+                                txtMarca.getText(),
+                                txtModelo.getText(),
+                                txtPais.getText(),
+                                txtRede.getText(),
+                                txtRep.getText(),
+                                txtMat.getText());
+                        myObject.mine(p);
+                        displayMessage("", "Bloco adicionado");
+                    } catch (Exception ex) {
+                        displayException("Add block", ex);
+                    }
+                }).start();
     }//GEN-LAST:event_btAddBlockActionPerformed
 
     private void txtMarcaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtMarcaActionPerformed
@@ -524,48 +528,39 @@ public class ServiceGUI extends javax.swing.JFrame implements NonceFoundListener
     }//GEN-LAST:event_txtRedeActionPerformed
 
     private void btGetBlockchainActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btGetBlockchainActionPerformed
-        try {
-            txtBlockchain.setText(myObject.getBlockchain().printBlocks());
-        } catch (RemoteException ex) {
-            displayException("Display Blockchain", ex);
-        }
-
+        new Thread(
+                () -> {
+                    try {
+                        txtBlockchain.setText(myObject.getBlockchain().printBlocks());
+                    } catch (RemoteException ex) {
+                        displayException("Display Blockchain", ex);
+                    }
+                }).start();
     }//GEN-LAST:event_btGetBlockchainActionPerformed
 
     private void btStartServerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btStartServerActionPerformed
-//        try {
-//            remoteObject = (IRemoteNode) RMI.getRemote(
-//                    txtConnectAddress.getText(),
-//                    Integer.valueOf(txtConnectPort.getText()),
-//                    RemoteNode.NAME);
-//            myObject.addNode(remoteObject);
-//            updateList();
-//            displayMessage("Connect to", "Conexão efectuada com sucesso.");
-//            //Faz load da blockchain guardada
-//            myObject.loadBlockchain();
-//            //Sincronizar a blockchain
-//            myObject.syncBlockchain();
-//        } catch (Exception ex) {
-//            displayException("Connect to", ex);
-//        }
-        try {
-            int port = Integer.parseInt(txtServerPort.getText());
-            myObject = new RemoteNode(port, this, bc);
-            RMI.startRemoteObject(myObject, port, RemoteNode.NAME);
-            AddressReceiver receiver = new AddressReceiver(myObject, this, txtServerAddress.getText());
-            receiver.start();
-            displayMessage("Start Server", "Objecto remoto disponível");
-            //Faz load da blockchain guardada
-            myObject.loadBlockchain();
-            //Sincronizar a blockchain
-            myObject.syncBlockchain();
-            AddressAnouncer anouncer = new AddressAnouncer(txtServerAddress.getText());
-            anouncer.start();
-            startClientListener(10020);
-            //updateList();
-        } catch (Exception ex) {
-            displayException("Start Server", ex);
-        }
+        new Thread(
+                () -> {
+                    try {
+                        int port = Integer.parseInt(txtServerPort.getText());
+                        myObject = new RemoteNode(port, this, bc);
+                        RMI.startRemoteObject(myObject, port, RemoteNode.NAME);
+                        AddressReceiver receiver = new AddressReceiver(myObject, this, txtServerAddress.getText());
+                        receiver.start();
+                        displayMessage("Start Server", "Objecto remoto disponível");
+                        //Faz load da blockchain guardada
+                        myObject.loadBlockchain();
+                        Thread.sleep(1000);
+                        //Sincronizar a blockchain
+                        myObject.syncBlockchain();
+                        AddressAnouncer anouncer = new AddressAnouncer(txtServerAddress.getText());
+                        anouncer.start();
+                        startClientListener(10020);
+                        //updateList();
+                    } catch (Exception ex) {
+                        displayException("Start Server", ex);
+                    }
+                }).start();
     }//GEN-LAST:event_btStartServerActionPerformed
 
     private void txtServerAddressActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtServerAddressActionPerformed
@@ -573,11 +568,15 @@ public class ServiceGUI extends javax.swing.JFrame implements NonceFoundListener
     }//GEN-LAST:event_txtServerAddressActionPerformed
 
     private void btSaveBCActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btSaveBCActionPerformed
-        try {
-            myObject.saveBlockchain();
-        } catch (RemoteException ex) {
-            Logger.getLogger(ServiceGUI.class.getName()).log(Level.SEVERE, null, ex);
-        }
+
+        new Thread(
+                () -> {
+                    try {
+                        myObject.saveBlockchain();
+                    } catch (RemoteException ex) {
+                        Logger.getLogger(ServiceGUI.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }).start();
     }//GEN-LAST:event_btSaveBCActionPerformed
 
     private void btDisconnectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btDisconnectActionPerformed
