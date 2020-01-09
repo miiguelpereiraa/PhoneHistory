@@ -44,7 +44,7 @@ public class ServiceGUI extends javax.swing.JFrame implements NonceFoundListener
                 if (logSucess) {
                     return "Login efectuado com sucesso";
                 } else {
-                    return "Login efectuado sem sucesso. P.f. verifique as suas credenciais ou registe-se na aplicação.";
+                    return "";
                 }
             case "REGISTO":
                 String userReg = param[1];
